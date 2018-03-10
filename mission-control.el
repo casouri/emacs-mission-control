@@ -25,7 +25,7 @@ For example, (font-spec :size 10)"
 (defun mcon-calculate-shape (length)
   "Calculate a 2D shape base on LENGTH."
   (let* ((row (truncate (sqrt length)))
-         (colomn (/ length row)))
+         (colomn (ceiling (/ length row))))
     `(,row ,colomn)
     ))
 
