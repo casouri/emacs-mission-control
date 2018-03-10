@@ -13,6 +13,11 @@
   :type 'list
   :group 'mission-control )
 
+(defcustom mcon-prompt-face '(:height 200)
+  "Face of numbers on the modeline on each window."
+  :type 'list
+  :group 'mission-control )
+
 (defcustom mcon-thumbnail-font (font-spec :size 10)
   "Font of each preview window.
 
@@ -115,13 +120,8 @@ For example, (font-spec :size 10)"
             (switch-to-buffer buffer)
             (push buffer temp-buffer-list)
             (unless (> count (length buffer-list))
-              ;; (insert-buffer-substring from-buffer)
-              (switch-to-buffer from-buffer)
-              (push-mark)
-              (forward-line height)
-              (kill-ring-save 1 1 t)
-              (switch-to-buffer buffer)
-              (yank)
+              (insert-buffer-substring from-buffer)
+              (goto-char 1)
               )
 
             (when mode
@@ -133,7 +133,12 @@ For example, (font-spec :size 10)"
             )))
 
       (let* ((number-char-list '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9))
-            (selected-window (string-to-number (char-to-string (read-char-choice "Select window: " number-char-list)))))
+             (selected-window (string-to-number
+                               (char-to-string
+                                (read-char-choice
+                                 (propertize "Select window: "
+                                             'face mcon-prompt-face)
+                                 number-char-list)))))
         (mapc #'kill-buffer temp-buffer-list)
         (delete-frame)
         (switch-to-buffer (nth (- selected-window 1) buffer-list))
