@@ -2,7 +2,7 @@
 
 This package provides a macOS mission-control-like way to switch between buffers.
 
-[[./mcon.gif][./mcon.gif]]
+[[./screenshot.ong][./screenshot.png]]
 
 * Functions
 
