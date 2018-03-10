@@ -5,10 +5,21 @@
 
 default is.")
 
+(defvar mcon-black-list-regexp '("\*.+\*" "magit")
+  "Buffers that match regexps inside this list are note included in mission control.")
+
+(defvar mcon-number-face '(:height 300)
+  "Face of numbers on the modeline on each window.")
+
+(defvar mcon-thumbnail-font (font-spec :size 10)
+  "Font of each preview window.
+
+It should be a font-spec object.
+
+For example, (font-spec :size 10)")
 
 (defun mcon-switch ()
   "Open mission control and select a buffer."
-
   
   (let* ((row (car mcon-window-shape))
           (colomn (nth 1 mcon-window-shape))
@@ -36,11 +47,12 @@ default is.")
     
      ;;
      ;; Construct buffer list
-     (dolist (buffer (buffer-list))
-       ;; don't include special buffers
-       (unless (string-match "\*.+\*" (buffer-name buffer))
-         (push buffer buffer-list)))
-
+    (let ((black-list-regexp (string-join mcon-black-list-regexp "\\|")))
+      (dolist (buffer (buffer-list))
+        ;; don't include special buffers
+        (unless (string-match black-list-regexp (buffer-name buffer))
+          (push buffer buffer-list))))
+    
      ;;
      ;; Create windows
      
@@ -85,6 +97,7 @@ default is.")
                (from-buffer (nth (- count 1) buffer-list))
                (mode (when from-buffer (buffer-local-value 'major-mode from-buffer))))
 
+           ;; copy some text from original buffer to temp buffer
            (switch-to-buffer buffer)
            (push buffer temp-buffer-list)
            (unless (> count (length buffer-list))
@@ -92,8 +105,8 @@ default is.")
 
            (when mode
              (setq-local major-mode mode))
-           (setq-local mode-line-format (propertize (format "%d" count) 'face '(:height 300)))
-           (set-frame-font (font-spec :size 10) t nil)
+           (setq-local mode-line-format (propertize (format "%d" count) 'face mcon-number-face))
+           (set-frame-font mcon-thumbnail-font t nil)
            )))
 
      (let ((selected-window (string-to-number (char-to-string (read-char "Select window: ")))))
