@@ -8,15 +8,20 @@
   :type 'list
   :group 'mission-control)
 
+(defcustom mcon-max-buffer 10
+  "Maximum number of buffers to show."
+  :type 'number
+  :group 'mission-control)
+
 (defcustom mcon-number-face '(:height 300)
   "Face of numbers on the modeline on each window."
   :type 'list
-  :group 'mission-control )
+  :group 'mission-control)
 
 (defcustom mcon-prompt-face '(:height 200)
   "Face of numbers on the modeline on each window."
   :type 'list
-  :group 'mission-control )
+  :group 'mission-control)
 
 (defcustom mcon-thumbnail-font (font-spec :size 10)
   "Font of each preview window.
@@ -60,11 +65,12 @@ For example, (font-spec :size 10)"
      ;;
      ;; Construct buffer list
     (let ((black-list-regexp (string-join mcon-black-list-regexp "\\|")))
-      (dolist (buffer (buffer-list))
+      (dolist (index (number-sequence 1 mcon-max-buffer))
         ;; don't include special buffers
-        (unless (string-match black-list-regexp (buffer-name buffer))
-          (push buffer buffer-list))))
-
+        (let ((buffer (nth (- index 1) (buffer-list))))
+          (unless (string-match black-list-regexp (buffer-name buffer))
+            (push buffer buffer-list)))))
+    
     (let* ((shape (mcon-calculate-shape (length buffer-list)))
            (row (car shape))
            (colomn (nth 1 shape))
