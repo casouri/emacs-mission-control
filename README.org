@@ -6,7 +6,7 @@ This package provides a macOS mission-control-like way to switch between buffers
 
 * Functions
 
-mcon-switch :: switch between buffers
+- mcon-switch :: switch between buffers
 
 * Customizations
 
