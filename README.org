@@ -4,6 +4,12 @@ This package provides a macOS mission-control-like way to switch between buffers
 
 [[./screenshot.ong][./screenshot.png]]
 
+* Install
+#+BEGIN_SRC lisp
+(require 'mission-control)
+(mcon-switch)
+#+END_SRC
+
 * Functions
 
 - mcon-switch :: switch between buffers
