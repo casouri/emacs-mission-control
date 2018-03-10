@@ -118,7 +118,8 @@ For example, (font-spec :size 10)"
               (insert-buffer-substring from-buffer))
 
             (when mode
-              (setq-local major-mode mode))
+              ;; (setq-local major-mode mode)
+              (funcall mode))
             (setq-local mode-line-format (propertize (format "%d %s" count name) 'face mcon-number-face))
             (set-frame-font mcon-thumbnail-font t nil)
             )))
