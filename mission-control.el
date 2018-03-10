@@ -124,7 +124,8 @@ For example, (font-spec :size 10)"
             (set-frame-font mcon-thumbnail-font t nil)
             )))
 
-      (let ((selected-window (string-to-number (char-to-string (read-char "Select window: ")))))
+      (let* ((number-char-list '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9))
+            (selected-window (string-to-number (char-to-string (read-char-choice "Select window: " number-char-list)))))
         (mapc #'kill-buffer temp-buffer-list)
         (delete-frame)
         (switch-to-buffer (nth (- selected-window 1) buffer-list))
