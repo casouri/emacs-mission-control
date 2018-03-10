@@ -110,16 +110,24 @@ For example, (font-spec :size 10)"
                  (from-buffer (nth (- count 1) buffer-list))
                  (mode (when from-buffer (buffer-local-value 'major-mode from-buffer)))
                  (name (if from-buffer (buffer-name from-buffer) "")))
-
+            
             ;; copy some text from original buffer to temp buffer
             (switch-to-buffer buffer)
             (push buffer temp-buffer-list)
             (unless (> count (length buffer-list))
-              (insert-buffer-substring from-buffer))
+              (insert-buffer-substring from-buffer)
+              ;; (save-current-buffer
+              ;;   (switch-to-buffer from-buffer)
+              ;;   (push-mark)
+              ;;   (forward-line height)
+              ;;   (kill-ring-save 1 1 t))
+              ;; (yank)
+              )
 
             (when mode
               ;; (setq-local major-mode mode)
               (funcall mode))
+
             (setq-local mode-line-format (propertize (format "%d %s" count name) 'face mcon-number-face))
             (set-frame-font mcon-thumbnail-font t nil)
             )))
