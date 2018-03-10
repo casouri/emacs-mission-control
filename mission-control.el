@@ -25,7 +25,7 @@ For example, (font-spec :size 10)"
 (defun mcon-calculate-shape (length)
   "Calculate a 2D shape base on LENGTH."
   (let* ((row (truncate (sqrt length)))
-         (colomn (ceiling (/ length row))))
+         (colomn (ceiling (/ (float length) row))))
     `(,row ,colomn)
     ))
 
@@ -115,13 +115,13 @@ For example, (font-spec :size 10)"
             (switch-to-buffer buffer)
             (push buffer temp-buffer-list)
             (unless (> count (length buffer-list))
-              (insert-buffer-substring from-buffer)
-              ;; (save-current-buffer
-              ;;   (switch-to-buffer from-buffer)
-              ;;   (push-mark)
-              ;;   (forward-line height)
-              ;;   (kill-ring-save 1 1 t))
-              ;; (yank)
+              ;; (insert-buffer-substring from-buffer)
+              (switch-to-buffer from-buffer)
+              (push-mark)
+              (forward-line height)
+              (kill-ring-save 1 1 t)
+              (switch-to-buffer buffer)
+              (yank)
               )
 
             (when mode
