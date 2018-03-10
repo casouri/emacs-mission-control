@@ -8,7 +8,7 @@
   :type 'list
   :group 'mission-control)
 
-(defcustom mcon-number-face '(:height 300)
+(defface mcon-number-face '(:height 300)
   "Face of numbers on the modeline on each window."
   :type 'list
   :group 'mission-control )
