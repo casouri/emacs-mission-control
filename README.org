@@ -1,0 +1,15 @@
+#+TITLE: Misson control
+
+This package provides a macOS mission-control-like way to switch between buffers.
+
+[[./mcon.gif][./mcon.gif]]
+
+* Functions
+
+mcon-switch :: switch between buffers
+
+* Customizations
+
+- mcon-black-list-regexp :: Buffers that match regexps inside this list are note included in mission control.
+- mcon-number-face :: Face of numbers on the modeline on each window.
+- mcon-thumbnail-font :: Font of each preview window.
