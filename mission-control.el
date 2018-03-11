@@ -120,6 +120,8 @@ EXTRA-FORM is a list of extra forms to be evaluated in each buffer."
           (setq-local mode-line-format (propertize (format "%d %s" count name) 'face number-face))
           (set-frame-font thumbnail-font t nil)
           (setq inhibit-message t)
+          (when (featurep 'linum)(linum-mode -1))
+          (when (featurep 'nlinum)(nlinum-mode -1))
           (dolist (form extra-form)
             (eval form))
           )))
