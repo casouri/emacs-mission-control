@@ -38,4 +38,6 @@ After =c-tab-timeout= seconds of idle buffer will switch to the selected one.
 - c-tab-thumbnail-font :: Font of each preview window.
 - c-tab-key-list :: A list of key sequences to invoke c-tab functions.
 
+c-tab shares =mcon-black-list-regexp=
+
                
