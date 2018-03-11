@@ -198,6 +198,11 @@ For example, (font-spec :size 10)"
   :type 'font-spec
   :group 'c-tab)
 
+(defcustom c-tab-initial-selection-offset 0
+  "0 means select original buffer when preview pane pops up.
+
+1 means select next buffer,etc.")
+
 (defcustom c-tab-key-list '("<C-tab>" "<C-backtab>")
   "Key sequence to invoke c-tab functions.
 
@@ -273,7 +278,7 @@ Counts form 1 instead of 0.")
                                '((c-tab--setup-next-binding)))))
         
         ;; select first window and highlight
-        (setq c-tab--selected-window 0)
+        (setq c-tab--selected-window c-tab-initial-selection-offset)
         (c-tab-next)
         
         ;; quit preview panel and select buffer in timeout
