@@ -216,7 +216,9 @@ Counts form 1 instead of 0.")
   (interactive)
   (let* ((frame-height (truncate (* (frame-parameter nil 'height) c-tab-height-ratio)))
          (frame-width (frame-parameter nil 'width))
-         (frame-top (+ (truncate (* (frame-pixel-height) (- 1 c-tab-height-ratio) 0.5)) (frame-parameter nil 'top)))
+         (frame-top (if window-system
+                        (+ (truncate (* (frame-pixel-height) (- 1 c-tab-height-ratio) 0.5)) (frame-parameter nil 'top))
+                      0))
          (buffer-list ()))
     
 
