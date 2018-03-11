@@ -287,13 +287,13 @@ Counts form 1 instead of 0.")
               (when mode (funcall mode))
               (setq-local mode-line-format (propertize (format "%d %s" count name) 'face c-tab-number-face))
               (set-frame-font c-tab-thumbnail-font t nil)
+              (global-set-key (kbd "<C-tab>") #'c-tab-next)
               )))
 
         ;; select first window and highlight
         (select-window (car c-tab--window-list))
         (buffer-face-set 'highlight)
-        (global-set-key (kbd "<C-tab>") #'c-tab-next)
-
+        
         (run-with-idle-timer c-tab-timeout nil
                              #'c-tab--cleanup
                              buffer-list temp-buffer-list)
