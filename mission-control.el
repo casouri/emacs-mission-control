@@ -41,6 +41,14 @@ For example, (font-spec :size 10)"
     `(,row ,colomn)
     ))
 
+(defun mcon--cleanup-gui ()
+  "Cleanup GUI elements in new frame."
+  (when window-system
+    (tool-bar-mode -1)
+    (scroll-bar-mode -1))
+  (unless (eq window-system 'ns)
+    (menu-bar-mode -1)))
+
 (defun mcon-switch ()
   "Open mission control and select a buffer."
   (interactive)
@@ -52,16 +60,8 @@ For example, (font-spec :size 10)"
          (frame-width (frame-parameter nil 'width))
          )
     
-    (make-frame
-     `((height . ,frame-height) (width . ,frame-width)))
-
-    ;; clean up
-    (when window-system
-      (tool-bar-mode -1)
-      (scroll-bar-mode -1))
-    (unless (eq window-system 'ns)
-      (menu-bar-mode -1))
-    
+    (make-frame `((height . ,frame-height) (width . ,frame-width)))
+    (mcon--cleanup-gui)
     
     (let* ((shape (mcon-calculate-shape (length buffer-list)))
            (row (car shape))
@@ -236,17 +236,8 @@ EXTRA-FORM is a list of extra forms to be evaluated in each buffer."
                       0))
          (buffer-list (mcon--construct-buffer-list mcon-black-list-regexp)))
     
-
-    (make-frame
-     `((height . ,frame-height) (width . ,frame-width) (top . ,frame-top)))
-
-    ;; clean up
-    (when window-system
-      (tool-bar-mode -1)
-      (scroll-bar-mode -1))
-    (unless (eq window-system 'ns)
-      (menu-bar-mode -1))
-
+    (make-frame `((height . ,frame-height) (width . ,frame-width) (top . ,frame-top)))
+    (mcon--cleanup-gui)
     
     ;; prepare window and buffers
     (let* ((buffer-list (reverse buffer-list))
