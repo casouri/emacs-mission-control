@@ -47,7 +47,7 @@ For example, (font-spec :size 10)"
   (let* ((row-window-list ())
          (colomn-window-list ())
          (all-window-list ())
-         (buffer-list (mcon-construct-buffer-list mcon-black-list-regexp))
+         (buffer-list (mcon--construct-buffer-list mcon-black-list-regexp))
          (window-count 0)
          (temp-buffer-list ())
          (frame-height (frame-parameter nil 'height))
@@ -70,39 +70,9 @@ For example, (font-spec :size 10)"
            (colomn (nth 1 shape))
            (width (/ frame-width colomn))
            (height (/ frame-height row))
+           (all-window-list (mcon--make-window row colomn width height))
            )
-      ;;
-      ;; Create windows
       
-      ;; add first window to list
-      ;; other windows are added in loop
-      (push (selected-window) row-window-list)
-      ;; make each row
-      (dolist (count (number-sequence 1 (- row 1)))
-        (select-window (split-window-below height))
-
-        (push (selected-window) row-window-list)
-        )
-
-      (setq row-window-list (reverse row-window-list))
-      
-      ;; make each colomn
-      (dolist (row-window row-window-list)
-        (select-window row-window)
-
-        (setq window-count (+ window-count 1))
-        (push (selected-window) all-window-list)
-        
-        (dolist (count (number-sequence 1 (- colomn 1)))
-          (select-window (split-window-right width))
-
-          (push (selected-window) colomn-window-list)
-          (setq window-count (+ window-count 1))
-          (push (selected-window) all-window-list)
-          ))
-
-      (setq all-window-list (reverse all-window-list))
-
       ;; now all windows are created
       ;; loop throught them again and
       ;; setup temp buffers in them
@@ -206,7 +176,7 @@ Counts form 1 instead of 0.")
 (defvar c-tab--inhibit-message-old-value nil
   "Original value of `inhibit-message'.")
 
-(defun mcon-construct-buffer-list (black-list-regexp)
+(defun mcon--construct-buffer-list (black-list-regexp)
   "Get a list of buffers that doesn't match in BLACK-LIST-REGEXP.
 
 Return a list of buffers."
@@ -219,6 +189,31 @@ Return a list of buffers."
           (push buffer buffer-list))))
     buffer-list))
 
+(defun mcon--make-window (row colomn width height)
+  "Create ROW x COLOMN windows in current frame.
+
+Each window is WIDTH x HEIGHT."
+  
+  (let ((row-window-list ())
+        (all-window-list ()))
+   ;; add first window to list
+   ;; other windows are added in loop
+   (push (selected-window) row-window-list)
+   ;; make each row
+   (dolist (count (number-sequence 1 (- row 1)))
+     (select-window (split-window-below height))
+     (push (selected-window) row-window-list))
+
+   (let ((row-window-list (reverse row-window-list)))
+     ;; make each colomn
+     (dolist (row-window row-window-list)
+       (select-window row-window)
+       (push (selected-window) all-window-list)
+       (dolist (count (number-sequence 1 (- colomn 1)))
+         (select-window (split-window-right width))
+         (push (selected-window) all-window-list)))
+     (reverse all-window-list))))
+
 (defun c-tab-graphic ()
   "Switch between buffers like C-TAB in mac and windows."
   (interactive)
@@ -229,7 +224,7 @@ Return a list of buffers."
          (frame-top (if window-system
                         (+ (truncate (* (frame-pixel-height) (- 1 c-tab-height-ratio) 0.5)) (frame-parameter nil 'top))
                       0))
-         (buffer-list (mcon-construct-buffer-list mcon-black-list-regexp)))
+         (buffer-list (mcon--construct-buffer-list mcon-black-list-regexp)))
     
 
     (make-frame
@@ -247,27 +242,16 @@ Return a list of buffers."
     (let* ((buffer-list (reverse buffer-list))
            (buffer-count (length buffer-list))
            (width (/ frame-width buffer-count))
-           (window-list ()))
-
+           (window-list (mcon--make-window 1 buffer-count width frame-height)))
+      
       (setq c-tab--buffer-list buffer-list)
       (setq c-tab--buffer-count buffer-count)
 
-      ;;
-      ;; Create windows
       
-      ;; add first window to list
-      ;; other windows are added in loop
-      (push (selected-window) window-list)
-      ;; make each row
-      (dolist (count (number-sequence 1 (- buffer-count 1)))
-        (select-window (split-window-right width))
-        (push (selected-window) window-list))
-
       ;; now all the windows are created
       ;; loop throught them again and
       ;; setup temp buffers in them
-      (let ((window-list (reverse window-list))
-            (temp-buffer-list ()))
+      (let ((temp-buffer-list ()))
 
         (setq c-tab--window-list window-list)
 
