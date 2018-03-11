@@ -4,9 +4,14 @@ This package provides a macOS mission-control-like way to switch between buffers
 
 *mission control:*
 
+=mcon-swith= to open preview panel, use number to seletec buffer to switch to.
+
 [[./mcon.gif][./mcon.gif]]
 
-*C TAB:*
+*C TAB:* (doesn't work on terminal yet)
+
+Press C-tab to open preview panel, C-tab to loop through them.
+After =c-tab-timeout- seconds= of idle buffer will switch to the selected one.
 
 [[./c-tab.gif][./c-tab.gif]]
 
