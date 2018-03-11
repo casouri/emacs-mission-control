@@ -287,7 +287,10 @@ Counts form 1 instead of 0.")
               (when mode (funcall mode))
               (setq-local mode-line-format (propertize (format "%d %s" count name) 'face c-tab-number-face))
               (set-frame-font c-tab-thumbnail-font t nil)
-              (global-set-key (kbd "<C-tab>") #'c-tab-next)
+              (setq-local inhibit-message t)
+              (if (featurep 'bind-key)
+                  (bind-key "<C-tab>" #'c-tab-next)
+                (global-set-key (kbd "<C-tab>") #'c-tab-next))
               )))
 
         ;; select first window and highlight
@@ -317,6 +320,8 @@ Counts form 1 instead of 0.")
   (global-set-key (kbd "<C-tab>") #'c-tab-graphic)
   )
 
-(global-set-key (kbd "<C-tab>") #'c-tab-graphic)
+(if (featurep 'bind-key)
+    (global-set-key (kbd "<C-tab>") #'c-tab-graphic)
+  (global-set-key (kbd "<C-tab>") #'c-tab-graphic))
 
 (provide 'mission-control)
