@@ -2,7 +2,13 @@
 
 This package provides a macOS mission-control-like way to switch between buffers.
 
+*mission control:*
+
 [[./mcon.gif][./mcon.gif]]
+
+*C TAB:*
+
+[[./c-tab.gif][./c-tab.gif]]
 
 * Install
 #+BEGIN_SRC lisp
@@ -13,9 +19,17 @@ This package provides a macOS mission-control-like way to switch between buffers
 * Functions
   
 - mcon-switch :: switch between buffers
+- c-tab-graphic :: switch between buffers
 
 * Customizations
 
 - mcon-black-list-regexp :: Buffers that match regexps inside this list are note included in mission control.
 - mcon-number-face :: Face of numbers on the modeline on each window.
 - mcon-thumbnail-font :: Font of each preview window.
+
+- c-tab-timeout :: Idle time before switch to selected buffer.
+- c-tab-max-buffer :: Maximum number of buffers that c-tab will show.
+- c-tab-height-ratio :: Ratio of height of preview frame to original frame.
+- c-tab-number-face :: Face of numbers on the modeline on each window.
+- c-tab-thumbnail-font :: Font of each preview window.
+- c-tab-key :: Key sequence to invoke c-tab functions.
