@@ -26,9 +26,7 @@ After =c-tab-timeout= seconds of idle buffer will switch to the selected one.
   
 - mcon-switch :: switch between buffers
 - c-tab-graphic :: switch between buffers. You can't directly call this function though.
-                   Configure =c-tab-key-list= to bind a key to this function and bind them
-                   with =c-tab-setup-key=
-                  
+                   Configure =c-tab-key-list= and call =c-tab-setup-key= to bind keys.
 - c-tab-setup-c-tab-binding :: Bing keys in =c-tab-key-list=.
 
 * Customizations
