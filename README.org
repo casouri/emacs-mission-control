@@ -4,7 +4,7 @@ This package provides a macOS mission-control-like way to switch between buffers
 
 *mission control:*
 
-=mcon-swith= to open preview panel, use number to seletec buffer to switch to.
+=mcon-swith= to open preview panel, use number to select buffer to switch to.
 
 [[./mcon.gif][./mcon.gif]]
 
