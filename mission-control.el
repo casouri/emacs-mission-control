@@ -211,9 +211,13 @@ Counts form 1 instead of 0.")
 (defvar c-tab-mode-map (make-sparse-keymap)
   "Key map for c-tab.")
 
+(defvar c-tab--inhibit-message-old-value nil
+  "Original value of `inhibit-message'.")
+
 (defun c-tab-graphic ()
   "Switch between buffers like C-TAB in mac and windows."
   (interactive)
+  (setq c-tab--inhibit-message-old-value inhibit-message)
   (let* ((frame-height (truncate (* (frame-parameter nil 'height) c-tab-height-ratio)))
          (frame-width (frame-parameter nil 'width))
          (frame-top (if window-system
@@ -289,7 +293,7 @@ Counts form 1 instead of 0.")
               (when mode (funcall mode))
               (setq-local mode-line-format (propertize (format "%d %s" count name) 'face c-tab-number-face))
               (set-frame-font c-tab-thumbnail-font t nil)
-              (setq-local inhibit-message t)
+              (setq inhibit-message t)
               (global-set-key (kbd "<C-tab>") #'c-tab-next)
               )))
 
@@ -318,6 +322,7 @@ Counts form 1 instead of 0.")
   (delete-frame)
   (switch-to-buffer (nth (1- c-tab--selected-window) buffer-list))
   (global-set-key (kbd "<C-tab>") #'c-tab-graphic)
+  (setq inhibit-message c-tab--inhibit-message-old-value)
   )
 
 (global-set-key (kbd "<C-tab>") #'c-tab-graphic)
