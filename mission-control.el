@@ -48,8 +48,6 @@ For example, (font-spec :size 10)"
          (colomn-window-list ())
          (all-window-list ())
          (buffer-list (mcon--construct-buffer-list mcon-black-list-regexp))
-         (window-count 0)
-         (temp-buffer-list ())
          (frame-height (frame-parameter nil 'height))
          (frame-width (frame-parameter nil 'width))
          )
@@ -71,51 +69,25 @@ For example, (font-spec :size 10)"
            (width (/ frame-width colomn))
            (height (/ frame-height row))
            (all-window-list (mcon--make-window row colomn width height))
-           )
+           (temp-buffer-list (mcon--format-temp-buffer
+                              row
+                              colomn
+                              all-window-list
+                              buffer-list
+                              mcon-thumbnail-font
+                              mcon-number-face
+                              '((c-tab--setup-next-binding))))
+           (number-char-list '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9))
+           (selected-window (string-to-number
+                             (char-to-string
+                              (read-char-choice
+                               (propertize "Select window: "
+                                           'face mcon-prompt-face)
+                               number-char-list)))))
       
-      ;; now all windows are created
-      ;; loop throught them again and
-      ;; setup temp buffers in them
-      (dolist (count (number-sequence 1 (* colomn row)))
-        (let ((window (nth (- count 1) all-window-list)))
-          (select-window window)
-
-          ;; leftover windows are left blank
-          (let* ((buffer (generate-new-buffer (format "tmp-%d" count)))
-                 (from-buffer (nth (- count 1) buffer-list))
-                 (mode (when from-buffer (buffer-local-value 'major-mode from-buffer)))
-                 (name (if from-buffer (buffer-name from-buffer) "")))
-            
-            ;; copy some text from original buffer to temp buffer
-            (switch-to-buffer buffer)
-            (push buffer temp-buffer-list)
-            (unless (> count (length buffer-list))
-              (insert-buffer-substring from-buffer)
-              (goto-char 1)
-              )
-
-            (when mode
-              ;; (setq-local major-mode mode)
-              (funcall mode))
-
-            (setq-local mode-line-format (propertize (format "%d %s" count name) 'face mcon-number-face))
-            (set-frame-font mcon-thumbnail-font t nil)
-            )))
-
-      (let* ((number-char-list '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9))
-             (selected-window (string-to-number
-                               (char-to-string
-                                (read-char-choice
-                                 (propertize "Select window: "
-                                             'face mcon-prompt-face)
-                                 number-char-list)))))
-        (mapc #'kill-buffer temp-buffer-list)
-        (delete-frame)
-        (switch-to-buffer (nth (- selected-window 1) buffer-list))
-        )
-      )
-    )
-  )
+      (mapc #'kill-buffer temp-buffer-list)
+      (delete-frame)
+      (switch-to-buffer (nth (- selected-window 1) buffer-list)))))
 
 (defgroup c-tab nil
   "Mission-control-like switch buffer."
@@ -214,6 +186,44 @@ Each window is WIDTH x HEIGHT."
          (push (selected-window) all-window-list)))
      (reverse all-window-list))))
 
+(defun mcon--format-temp-buffer (row colomn window-list buffer-list thumbnail-face number-face &optional extra-form)
+  "Format each buffer in preview windows.
+
+ROW & COLOMN are same with window shape.
+
+EXTRA-FORM is a list of extra forms to be evaluated in each buffer."
+  ;; now all windows are created
+  ;; loop throught them again and
+  ;; setup temp buffers in them
+  (let ((temp-buffer-list ()))
+    (dolist (count (number-sequence 1 (* colomn row)))
+      (let ((window (nth (- count 1) window-list)))
+        (select-window window)
+        ;; leftover windows are left blank
+        (let* ((buffer (generate-new-buffer (format "tmp-%d" count)))
+               (from-buffer (nth (- count 1) buffer-list))
+               (mode (when from-buffer (buffer-local-value 'major-mode from-buffer)))
+               (name (if from-buffer (buffer-name from-buffer) "")))
+          ;; now do all the formating in each buffer
+          
+          ;; copy some text from original buffer to temp buffer
+          (switch-to-buffer buffer)
+          (push buffer temp-buffer-list)
+          (unless (> count (length buffer-list))
+            (insert-buffer-substring from-buffer)
+            (goto-char 1))
+
+          ;; format
+          ;; syntax highlight
+          (when mode (funcall mode))
+          (setq-local mode-line-format (propertize (format "%d %s" count name) 'face number-face))
+          (set-frame-font thumbnail-face t nil)
+          (setq inhibit-message t)
+          (dolist (form extra-form)
+            (eval form))
+          )))
+    temp-buffer-list))
+
 (defun c-tab-graphic ()
   "Switch between buffers like C-TAB in mac and windows."
   (interactive)
@@ -246,44 +256,25 @@ Each window is WIDTH x HEIGHT."
       
       (setq c-tab--buffer-list buffer-list)
       (setq c-tab--buffer-count buffer-count)
-
+      (setq c-tab--window-list window-list)
       
       ;; now all the windows are created
       ;; loop throught them again and
       ;; setup temp buffers in them
-      (let ((temp-buffer-list ()))
-
-        (setq c-tab--window-list window-list)
-
-        (dolist (count (number-sequence 1 buffer-count))
-          (let ((window (nth (- count 1) window-list)))
-            (select-window window)
-
-            (let* ((temp-buffer (generate-new-buffer (format "tmp-%d" count)))
-                   (from-buffer (nth (- count 1) buffer-list))
-                   (mode (when from-buffer (buffer-local-value 'major-mode from-buffer)))
-                   (name (if from-buffer (buffer-name from-buffer) "")))
-              
-              ;; copy some text from original buffer to temp buffer
-              (switch-to-buffer temp-buffer)
-              (push temp-buffer temp-buffer-list)
-              (insert-buffer-substring from-buffer)
-              (goto-char 1)
-                
-
-              ;; format
-              (when mode (funcall mode))
-              (setq-local mode-line-format (propertize (format "%d %s" count name) 'face c-tab-number-face))
-              (set-frame-font c-tab-thumbnail-font t nil)
-              (setq inhibit-message t)
-              (c-tab--setup-next-binding)
-              )))
-          
-        ;; select first window and highlight
-        (select-window (car c-tab--window-list))
-        (buffer-face-set 'highlight)
-        (face-remap-add-relative 'font-lock-comment-face '(highlight))
+      (let ((temp-buffer-list (mcon--format-temp-buffer
+                               1
+                               buffer-count
+                               window-list
+                               buffer-list
+                               c-tab-thumbnail-font
+                               c-tab-number-face
+                               '((c-tab--setup-next-binding)))))
         
+        ;; select first window and highlight
+        (setq c-tab--selected-window 0)
+        (c-tab-next)
+        
+        ;; quit preview panel and select buffer in timeout
         (run-with-idle-timer c-tab-timeout nil
                              #'c-tab--cleanup
                              buffer-list temp-buffer-list)
