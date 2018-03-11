@@ -87,7 +87,7 @@ Each window is WIDTH x HEIGHT."
          (push (selected-window) all-window-list)))
      (reverse all-window-list))))
 
-(defun mcon--format-temp-buffer (row colomn window-list buffer-list thumbnail-face number-face &optional extra-form)
+(defun mcon--format-temp-buffer (row colomn window-list buffer-list thumbnail-font number-face &optional extra-form)
   "Format each buffer in preview windows.
 
 ROW & COLOMN are same with window shape.
@@ -118,7 +118,7 @@ EXTRA-FORM is a list of extra forms to be evaluated in each buffer."
           ;; syntax highlight
           (when mode (funcall mode))
           (setq-local mode-line-format (propertize (format "%d %s" count name) 'face number-face))
-          (set-frame-font thumbnail-face t nil)
+          (set-frame-font thumbnail-font t nil)
           (setq inhibit-message t)
           (dolist (form extra-form)
             (eval form))
@@ -183,9 +183,8 @@ EXTRA-FORM is a list of extra forms to be evaluated in each buffer."
   :type 'number
   :group 'c-tab)
 
-(defcustom c-tab-number-face '(:height 200)
+(defface c-tab-number-face '((t(:height 200)))
   "Face of numbers on the modeline on each window."
-  :type 'list
   :group 'c-tab)
 
 (defcustom c-tab-thumbnail-font (font-spec :size 10)
