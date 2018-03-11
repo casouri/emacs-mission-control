@@ -185,7 +185,7 @@ EXTRA-FORM is a list of extra forms to be evaluated in each buffer."
   :type 'number
   :group 'c-tab)
 
-(defface c-tab-number-face '((t(:height 200)))
+(defcustom c-tab-number-face '((:height 200))
   "Face of numbers on the modeline on each window."
   :group 'c-tab)
 
