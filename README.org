@@ -41,6 +41,8 @@ After =c-tab-timeout= seconds of idle buffer will switch to the selected one.
 - c-tab-number-face :: Face of numbers on the modeline on each window.
 - c-tab-thumbnail-font :: Font of each preview window.
 - c-tab-key-list :: A list of key sequences to invoke c-tab functions.
+                    
+- c-tab-initial-selection-off-set :: 0 means select original buffer, 1 means select the second one, etc.
 
 c-tab shares =mcon-black-list-regexp=
 
