@@ -8,7 +8,7 @@ This package provides a macOS mission-control-like way to switch between buffers
 
 [[./mcon.gif][./mcon.gif]]
 
-*C TAB:* (doesn't work on terminal yet)
+*C TAB:* 
 
 Press C-tab to open preview panel, C-tab to loop through them.
 After =c-tab-timeout- seconds= of idle buffer will switch to the selected one.
@@ -37,4 +37,6 @@ After =c-tab-timeout- seconds= of idle buffer will switch to the selected one.
 - c-tab-height-ratio :: Ratio of height of preview frame to original frame.
 - c-tab-number-face :: Face of numbers on the modeline on each window.
 - c-tab-thumbnail-font :: Font of each preview window.
-- c-tab-key :: Key sequence to invoke c-tab functions.
+- c-tab-key-list :: A list of key sequences to invoke c-tab functions.
+
+               

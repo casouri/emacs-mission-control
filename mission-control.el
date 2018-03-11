@@ -188,11 +188,11 @@ For example, (font-spec :size 10)"
   :type 'font-spec
   :group 'c-tab)
 
-(defcustom c-tab-key "<C-tab>"
+(defcustom c-tab-key-list '("<C-tab>" "<s-tab>")
   "Key sequence to invoke c-tab functions.
 
 e.g. \"<C-tab>\""
-  :type 'string
+  :type 'list
   :group 'c-tab)
 
 (defvar c-tab--window-list ()
@@ -294,7 +294,8 @@ Counts form 1 instead of 0.")
               (setq-local mode-line-format (propertize (format "%d %s" count name) 'face c-tab-number-face))
               (set-frame-font c-tab-thumbnail-font t nil)
               (setq inhibit-message t)
-              (global-set-key (kbd "<C-tab>") #'c-tab-next)
+              (dolist (key c-tab-key-list)
+              (global-set-key (kbd key) #'c-tab-next))
               )))
 
         ;; select first window and highlight
@@ -325,6 +326,7 @@ Counts form 1 instead of 0.")
   (setq inhibit-message c-tab--inhibit-message-old-value)
   )
 
-(global-set-key (kbd "<C-tab>") #'c-tab-graphic)
+(dolist (key c-tab-key-list)
+ (global-set-key (kbd key) #'c-tab-graphic))
 
 (provide 'mission-control)
