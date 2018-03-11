@@ -52,13 +52,12 @@ For example, (font-spec :size 10)"
 (defun mcon-switch ()
   "Open mission control and select a buffer."
   (interactive)
-  (let* ((row-window-list ())
+  (let* ((row-window-list    ())
          (colomn-window-list ())
-         (all-window-list ())
-         (buffer-list (mcon--construct-buffer-list mcon-black-list-regexp))
-         (frame-height (frame-parameter nil 'height))
-         (frame-width (frame-parameter nil 'width))
-         )
+         (all-window-list    ())
+         (buffer-list        (mcon--construct-buffer-list mcon-black-list-regexp))
+         (frame-height       (frame-parameter nil 'height))
+         (frame-width        (frame-parameter nil 'width)))
     
     (make-frame `((height . ,frame-height) (width . ,frame-width)))
     (mcon--cleanup-gui)
@@ -230,20 +229,20 @@ EXTRA-FORM is a list of extra forms to be evaluated in each buffer."
   (setq c-tab--inhibit-message-old-value inhibit-message)
   (setq c-tab--selected-window 1)
   (let* ((frame-height (truncate (* (frame-parameter nil 'height) c-tab-height-ratio)))
-         (frame-width (frame-parameter nil 'width))
-         (frame-top (if window-system
-                        (+ (truncate (* (frame-pixel-height) (- 1 c-tab-height-ratio) 0.5)) (frame-parameter nil 'top))
-                      0))
-         (buffer-list (mcon--construct-buffer-list mcon-black-list-regexp)))
+         (frame-width  (frame-parameter nil 'width))
+         (frame-top    (if window-system
+                           (+ (truncate (* (frame-pixel-height) (- 1 c-tab-height-ratio) 0.5)) (frame-parameter nil 'top))
+                         0))
+         (buffer-list  (mcon--construct-buffer-list mcon-black-list-regexp)))
     
     (make-frame `((height . ,frame-height) (width . ,frame-width) (top . ,frame-top)))
     (mcon--cleanup-gui)
     
     ;; prepare window and buffers
-    (let* ((buffer-list (reverse buffer-list))
+    (let* ((buffer-list  (reverse buffer-list))
            (buffer-count (length buffer-list))
-           (width (/ frame-width buffer-count))
-           (window-list (mcon--make-window 1 buffer-count width frame-height)))
+           (width        (/ frame-width buffer-count))
+           (window-list  (mcon--make-window 1 buffer-count width frame-height)))
       
       (setq c-tab--buffer-list buffer-list)
       (setq c-tab--buffer-count buffer-count)
