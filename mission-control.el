@@ -304,6 +304,7 @@ Counts form 1 instead of 0.")
         ;; select first window and highlight
         (select-window (car c-tab--window-list))
         (buffer-face-set 'highlight)
+        (face-remap-add-relative 'font-lock-comment-face '(highlight))
         
         (run-with-idle-timer c-tab-timeout nil
                              #'c-tab--cleanup
@@ -314,11 +315,13 @@ Counts form 1 instead of 0.")
   "Selected next preview window in c-tab-mode."
   (interactive)
   (buffer-face-set 'default)
+  (face-remap-add-relative 'font-lock-comment-face '(font-lock-comment-face))
   (setq c-tab--selected-window (1+ c-tab--selected-window))
   (when (> c-tab--selected-window c-tab--buffer-count)
     (setq c-tab--selected-window 1))
   (select-window (nth (1- c-tab--selected-window) c-tab--window-list))
-  (buffer-face-set 'highlight))
+  (buffer-face-set 'highlight)
+  (face-remap-add-relative 'font-lock-comment-face '(highlight)))
 
 (defun c-tab--cleanup (buffer-list temp-buffer-list)
   "Switch to selected buffer and clean up temp buffers, windows and frame."
