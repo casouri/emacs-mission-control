@@ -223,6 +223,17 @@ Counts form 1 instead of 0.")
 (defvar c-tab--inhibit-message-old-value nil
   "Original value of `inhibit-message'.")
 
+(defvar c-tab-face-to-override '(default
+                                  font-lock-comment-face
+                                  font-lock-warning-face
+                                  hl-line)
+  "Faces to be highlighted when c-tab highlight a buffer.")
+
+(defvar c-tab--face-remap-list ()
+  "A list of remaps returned by `face-remap-add-relative'.
+
+`c-tab--unhignlight' use them to unhignlight.")
+
 (defun c-tab-graphic ()
   "Switch between buffers like C-TAB in mac and windows."
   (interactive)
@@ -273,14 +284,23 @@ Counts form 1 instead of 0.")
 (defun c-tab-next ()
   "Selected next preview window in c-tab-mode."
   (interactive)
-  (buffer-face-set 'default)
-  (face-remap-add-relative 'font-lock-comment-face '(font-lock-comment-face))
+  (c-tab--unhignlight)
   (setq c-tab--selected-window (1+ c-tab--selected-window))
   (when (> c-tab--selected-window c-tab--buffer-count)
     (setq c-tab--selected-window 1))
   (select-window (nth (1- c-tab--selected-window) c-tab--window-list))
-  (buffer-face-set 'highlight)
-  (face-remap-add-relative 'font-lock-comment-face '(highlight)))
+  (c-tab--highlight))
+
+(defun c-tab--highlight ()
+  "Highlight current buffer"
+  (dolist (face c-tab-face-to-override)
+    (push (face-remap-add-relative face '(highlight))
+          c-tab--face-remap-list)))
+
+(defun c-tab--unhignlight ()
+  "Set buffer face back."
+  (dolist (remap c-tab--face-remap-list)
+    (face-remap-remove-relative remap)))
 
 (defun c-tab--cleanup (buffer-list temp-buffer-list)
   "Switch to selected buffer and clean up temp buffers, windows and frame."
