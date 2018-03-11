@@ -18,7 +18,6 @@ After =c-tab-timeout= seconds of idle buffer will switch to the selected one.
 * Install
 #+BEGIN_SRC lisp
 (require 'mission-control)
-(mcon-switch)
 #+END_SRC
 
 * Functions
