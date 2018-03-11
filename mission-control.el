@@ -47,7 +47,7 @@ For example, (font-spec :size 10)"
   (let* ((row-window-list ())
          (colomn-window-list ())
          (all-window-list ())
-         (buffer-list ())
+         (buffer-list (mcon-construct-buffer-list mcon-black-list-regexp))
          (window-count 0)
          (temp-buffer-list ())
          (frame-height (frame-parameter nil 'height))
@@ -64,14 +64,6 @@ For example, (font-spec :size 10)"
     (unless (eq window-system 'ns)
       (menu-bar-mode -1))
     
-     ;;
-     ;; Construct buffer list
-    (let ((black-list-regexp (string-join mcon-black-list-regexp "\\|")))
-      (dolist (index (number-sequence 1 mcon-max-buffer))
-        ;; don't include special buffers
-        (let ((buffer (nth (- index 1) (buffer-list))))
-          (unless (string-match black-list-regexp (buffer-name buffer))
-            (push buffer buffer-list)))))
     
     (let* ((shape (mcon-calculate-shape (length buffer-list)))
            (row (car shape))
@@ -214,6 +206,19 @@ Counts form 1 instead of 0.")
 (defvar c-tab--inhibit-message-old-value nil
   "Original value of `inhibit-message'.")
 
+(defun mcon-construct-buffer-list (black-list-regexp)
+  "Get a list of buffers that doesn't match in BLACK-LIST-REGEXP.
+
+Return a list of buffers."
+  (let ((black-list-regexp (string-join black-list-regexp "\\|"))
+        (buffer-list ()))
+    (dolist (index (number-sequence 1 c-tab-max-buffer))
+      ;; don't include special buffers
+      (let ((buffer (nth (- index 1) (buffer-list))))
+        (unless (string-match black-list-regexp (buffer-name buffer))
+          (push buffer buffer-list))))
+    buffer-list))
+
 (defun c-tab-graphic ()
   "Switch between buffers like C-TAB in mac and windows."
   (interactive)
@@ -224,7 +229,7 @@ Counts form 1 instead of 0.")
          (frame-top (if window-system
                         (+ (truncate (* (frame-pixel-height) (- 1 c-tab-height-ratio) 0.5)) (frame-parameter nil 'top))
                       0))
-         (buffer-list ()))
+         (buffer-list (mcon-construct-buffer-list mcon-black-list-regexp)))
     
 
     (make-frame
@@ -237,14 +242,6 @@ Counts form 1 instead of 0.")
     (unless (eq window-system 'ns)
       (menu-bar-mode -1))
 
-    ;;
-    ;; Construct buffer list
-    (let ((black-list-regexp (string-join mcon-black-list-regexp "\\|")))
-      (dolist (index (number-sequence 1 c-tab-max-buffer))
-        ;; don't include special buffers
-        (let ((buffer (nth (- index 1) (buffer-list))))
-          (unless (string-match black-list-regexp (buffer-name buffer))
-            (push buffer buffer-list)))))
     
     ;; prepare window and buffers
     (let* ((buffer-list (reverse buffer-list))
