@@ -10,7 +10,7 @@ This package provides a macOS mission-control-like way to switch between buffers
 
 *C TAB:* 
 
-Press C-tab (S-tab on terminal) (=c-tab-graphic=) to open preview panel, C-tab to loop through them.
+Press C-tab (S-tab on terminal) (=c-tab-graphic=) to open preview panel, C-tab (S-tab) to loop through them.
 After =c-tab-timeout= seconds of idle buffer will switch to the selected one.
 
 [[./c-tab.gif][./c-tab.gif]]
