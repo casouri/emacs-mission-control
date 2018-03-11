@@ -18,12 +18,18 @@ After =c-tab-timeout= seconds of idle buffer will switch to the selected one.
 * Install
 #+BEGIN_SRC lisp
 (require 'mission-control)
+;; to use c-tab
+(c-tab-setup-c-tab-binding)
 #+END_SRC
 
 * Functions
   
 - mcon-switch :: switch between buffers
-- c-tab-graphic :: switch between buffers
+- c-tab-graphic :: switch between buffers. You can't directly call this function though.
+                   Configure =c-tab-key-list= to bind a key to this function and bind them
+                   with =c-tab-setup-key=
+                  
+- c-tab-setup-c-tab-binding :: Bing keys in =c-tab-key-list=.
 
 * Customizations
 

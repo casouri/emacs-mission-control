@@ -306,6 +306,6 @@ Counts form 1 instead of 0.")
         (eval `(bind-key* ,key #'c-tab-graphic))
       (global-set-key (kbd key) #'c-tab-graphic))))
 
-(c-tab-setup-c-tab-binding)
+;; (c-tab-setup-c-tab-binding)
 
 (provide 'mission-control)
