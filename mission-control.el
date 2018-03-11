@@ -188,7 +188,7 @@ For example, (font-spec :size 10)"
   :type 'font-spec
   :group 'c-tab)
 
-(defcustom c-tab-key-list '("<C-tab>" "<backtab>")
+(defcustom c-tab-key-list '("<C-tab>" "<C-backtab>")
   "Key sequence to invoke c-tab functions.
 
 e.g. \"<C-tab>\""
