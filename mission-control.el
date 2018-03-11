@@ -49,6 +49,82 @@ For example, (font-spec :size 10)"
   (unless (eq window-system 'ns)
     (menu-bar-mode -1)))
 
+(defun mcon--construct-buffer-list (black-list-regexp)
+  "Get a list of buffers that doesn't match in BLACK-LIST-REGEXP.
+
+Return a list of buffers."
+  (let ((black-list-regexp (string-join black-list-regexp "\\|"))
+        (buffer-list ()))
+    (dolist (index (number-sequence 1 c-tab-max-buffer))
+      ;; don't include special buffers
+      (let ((buffer (nth (- index 1) (buffer-list))))
+        (unless (string-match black-list-regexp (buffer-name buffer))
+          (push buffer buffer-list))))
+    buffer-list))
+
+(defun mcon--make-window (row colomn width height)
+  "Create ROW x COLOMN windows in current frame.
+
+Each window is WIDTH x HEIGHT."
+  
+  (let ((row-window-list ())
+        (all-window-list ()))
+   ;; add first window to list
+   ;; other windows are added in loop
+   (push (selected-window) row-window-list)
+   ;; make each row
+   (dolist (count (number-sequence 1 (- row 1)))
+     (select-window (split-window-below height))
+     (push (selected-window) row-window-list))
+
+   (let ((row-window-list (reverse row-window-list)))
+     ;; make each colomn
+     (dolist (row-window row-window-list)
+       (select-window row-window)
+       (push (selected-window) all-window-list)
+       (dolist (count (number-sequence 1 (- colomn 1)))
+         (select-window (split-window-right width))
+         (push (selected-window) all-window-list)))
+     (reverse all-window-list))))
+
+(defun mcon--format-temp-buffer (row colomn window-list buffer-list thumbnail-face number-face &optional extra-form)
+  "Format each buffer in preview windows.
+
+ROW & COLOMN are same with window shape.
+
+EXTRA-FORM is a list of extra forms to be evaluated in each buffer."
+  ;; now all windows are created
+  ;; loop throught them again and
+  ;; setup temp buffers in them
+  (let ((temp-buffer-list ()))
+    (dolist (count (number-sequence 1 (* colomn row)))
+      (let ((window (nth (- count 1) window-list)))
+        (select-window window)
+        ;; leftover windows are left blank
+        (let* ((buffer (generate-new-buffer (format "tmp-%d" count)))
+               (from-buffer (nth (- count 1) buffer-list))
+               (mode (when from-buffer (buffer-local-value 'major-mode from-buffer)))
+               (name (if from-buffer (buffer-name from-buffer) "")))
+          ;; now do all the formating in each buffer
+          
+          ;; copy some text from original buffer to temp buffer
+          (switch-to-buffer buffer)
+          (push buffer temp-buffer-list)
+          (unless (> count (length buffer-list))
+            (insert-buffer-substring from-buffer)
+            (goto-char 1))
+
+          ;; format
+          ;; syntax highlight
+          (when mode (funcall mode))
+          (setq-local mode-line-format (propertize (format "%d %s" count name) 'face number-face))
+          (set-frame-font thumbnail-face t nil)
+          (setq inhibit-message t)
+          (dolist (form extra-form)
+            (eval form))
+          )))
+    temp-buffer-list))
+
 (defun mcon-switch ()
   "Open mission control and select a buffer."
   (interactive)
@@ -146,82 +222,6 @@ Counts form 1 instead of 0.")
 
 (defvar c-tab--inhibit-message-old-value nil
   "Original value of `inhibit-message'.")
-
-(defun mcon--construct-buffer-list (black-list-regexp)
-  "Get a list of buffers that doesn't match in BLACK-LIST-REGEXP.
-
-Return a list of buffers."
-  (let ((black-list-regexp (string-join black-list-regexp "\\|"))
-        (buffer-list ()))
-    (dolist (index (number-sequence 1 c-tab-max-buffer))
-      ;; don't include special buffers
-      (let ((buffer (nth (- index 1) (buffer-list))))
-        (unless (string-match black-list-regexp (buffer-name buffer))
-          (push buffer buffer-list))))
-    buffer-list))
-
-(defun mcon--make-window (row colomn width height)
-  "Create ROW x COLOMN windows in current frame.
-
-Each window is WIDTH x HEIGHT."
-  
-  (let ((row-window-list ())
-        (all-window-list ()))
-   ;; add first window to list
-   ;; other windows are added in loop
-   (push (selected-window) row-window-list)
-   ;; make each row
-   (dolist (count (number-sequence 1 (- row 1)))
-     (select-window (split-window-below height))
-     (push (selected-window) row-window-list))
-
-   (let ((row-window-list (reverse row-window-list)))
-     ;; make each colomn
-     (dolist (row-window row-window-list)
-       (select-window row-window)
-       (push (selected-window) all-window-list)
-       (dolist (count (number-sequence 1 (- colomn 1)))
-         (select-window (split-window-right width))
-         (push (selected-window) all-window-list)))
-     (reverse all-window-list))))
-
-(defun mcon--format-temp-buffer (row colomn window-list buffer-list thumbnail-face number-face &optional extra-form)
-  "Format each buffer in preview windows.
-
-ROW & COLOMN are same with window shape.
-
-EXTRA-FORM is a list of extra forms to be evaluated in each buffer."
-  ;; now all windows are created
-  ;; loop throught them again and
-  ;; setup temp buffers in them
-  (let ((temp-buffer-list ()))
-    (dolist (count (number-sequence 1 (* colomn row)))
-      (let ((window (nth (- count 1) window-list)))
-        (select-window window)
-        ;; leftover windows are left blank
-        (let* ((buffer (generate-new-buffer (format "tmp-%d" count)))
-               (from-buffer (nth (- count 1) buffer-list))
-               (mode (when from-buffer (buffer-local-value 'major-mode from-buffer)))
-               (name (if from-buffer (buffer-name from-buffer) "")))
-          ;; now do all the formating in each buffer
-          
-          ;; copy some text from original buffer to temp buffer
-          (switch-to-buffer buffer)
-          (push buffer temp-buffer-list)
-          (unless (> count (length buffer-list))
-            (insert-buffer-substring from-buffer)
-            (goto-char 1))
-
-          ;; format
-          ;; syntax highlight
-          (when mode (funcall mode))
-          (setq-local mode-line-format (propertize (format "%d %s" count name) 'face number-face))
-          (set-frame-font thumbnail-face t nil)
-          (setq inhibit-message t)
-          (dolist (form extra-form)
-            (eval form))
-          )))
-    temp-buffer-list))
 
 (defun c-tab-graphic ()
   "Switch between buffers like C-TAB in mac and windows."
