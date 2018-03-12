@@ -328,19 +328,19 @@ Counts form 1 instead of 0.")
                              buffer-list temp-buffer-list)
         ))))
 
-(defun c-tab-next ()
-  "Selected next preview window in c-tab-mode."
-  (interactive))
-(((c-tab--unhignlight)
-  (setq c-tab--selected-window (1+ c-tab--selected-window))
-  (when (> c-tab--selected-window c-tab--buffer-count)
-    (setq c-tab--selected-window 1))
-  (select-window (nth (1- c-tab--selected-window) c-tab--window-list))
-  (c-tab--highlight))
+(defun mcon-c-tab-next ()
+  "Selected next preview window in mcon-c-tab-mode."
+  (interactive)
+  (mission-control-c-tab--unhignlight)
+  (setq mcon-c-tab--selected-window (1+ mcon-c-tab--selected-window))
+  (when (> mcon-c-tab--selected-window mcon-c-tab--buffer-count)
+    (setq mcon-c-tab--selected-window 1))
+  (select-window (nth (1- mcon-c-tab--selected-window) mcon-c-tab--window-list))
+  (mission-control-c-tab--highlight))
 
-(defun c-tab--highlight ()
-  "Highlight current buffer"
-  (dolist (face c-tab-face-to-override)
+(defun mcon-c-tab--highlight ()
+  "Highlight current buffer."
+  (dolist (face mcon-c-tab-face-to-override)
     (push (face-remap-add-relative face '(highlight))
           mcon-c-tab--face-remap-list)))
 
@@ -349,8 +349,11 @@ Counts form 1 instead of 0.")
   (dolist (remap mcon-c-tab--face-remap-list)
     (face-remap-remove-relative remap)))
 
-((defun c-tab--cleanup (buffer-list temp-buffer-list)
-  "Switch to selected buffer and clean up temp buffers, windows and frame."
+(defun mcon-c-tab--cleanup (buffer-list temp-buffer-list)
+  "Switch to selected buffer and clean up temp buffers, windows and frame.
+Argument BUFFER-LIST a list of buffers in Emacs buffer list.
+Argument TEMP-BUFFER-LIST temperary buffers correspond to each preview window."
+
   (mapc #'kill-buffer temp-buffer-list)
   (delete-frame)
   (switch-to-buffer (nth (1- mcon-c-tab--selected-window) buffer-list))
