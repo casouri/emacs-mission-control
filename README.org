@@ -4,46 +4,46 @@ This package provides a macOS mission-control-like way to switch between buffers
 
 *mission control:*
 
-=mission-control-swith= to open preview panel, use number to select buffer to switch to.
+=mcon-swith= to open preview panel, use number to select buffer to switch to.
 
 [[./mcon.gif][./mcon.gif]]
 
 *C TAB:* 
 
-Press mission-control-c-tab (C-S-tab on terminal) (=mission-control-c-tab-graphic=) to open preview panel, mission-control-c-tab (C-S-tab) to loop through them.
-After =mission-control-c-tab-timeout= seconds of idle buffer will switch to the selected one.
+Press C-tab (C-S-tab on terminal) (=c-tab-graphic=) to open preview panel, C-tab (C-S-tab) to loop through them.
+After =c-tab-timeout= seconds of idle buffer will switch to the selected one.
 
 [[./c-tab.gif][./c-tab.gif]]
 
 * Install
 #+BEGIN_SRC lisp
 (require 'mission-control)
-;; to use mission-control-c-tab
-(mission-control-c-tab-setup-mission-control-c-tab-binding)
+;; to use c-tab
+(c-tab-setup-c-tab-binding)
 #+END_SRC
 
 * Functions
   
-- mission-control-switch :: switch between buffers
-- mission-control-c-tab-graphic :: switch between buffers. You can't directly call this function though.
-                   Configure =mission-control-c-tab-key-list= and call =mission-control-c-tab-setup-key= to bind keys.
-- mission-control-c-tab-setup-mission-control-c-tab-binding :: Bing keys in =mission-control-c-tab-key-list=.
+- mcon-switch :: switch between buffers
+- c-tab-graphic :: switch between buffers. You can't directly call this function though.
+                   Configure =c-tab-key-list= and call =c-tab-setup-key= to bind keys.
+- c-tab-setup-c-tab-binding :: Bing keys in =c-tab-key-list=.
 
 * Customizations
 
-- mission-control-black-list-regexp :: Buffers that match regexps inside this list are note included in mission control.
-- mission-control-number-face :: Face of numbers on the modeline on each window.
-- mission-control-thumbnail-font :: Font of each preview window.
+- mcon-black-list-regexp :: Buffers that match regexps inside this list are note included in mission control.
+- mcon-number-face :: Face of numbers on the modeline on each window.
+- mcon-thumbnail-font :: Font of each preview window.
 
-- mission-control-c-tab-timeout :: Idle time before switch to selected buffer.
-- mission-control-c-tab-max-buffer :: Maximum number of buffers that mission-control-c-tab will show.
-- mission-control-c-tab-height-ratio :: Ratio of height of preview frame to original frame.
-- mission-control-c-tab-number-face :: Face of numbers on the modeline on each window.
-- mission-control-c-tab-thumbnail-font :: Font of each preview window.
-- mission-control-c-tab-key-list :: A list of key sequences to invoke mission-control-c-tab functions.
+- c-tab-timeout :: Idle time before switch to selected buffer.
+- c-tab-max-buffer :: Maximum number of buffers that c-tab will show.
+- c-tab-height-ratio :: Ratio of height of preview frame to original frame.
+- c-tab-number-face :: Face of numbers on the modeline on each window.
+- c-tab-thumbnail-font :: Font of each preview window.
+- c-tab-key-list :: A list of key sequences to invoke c-tab functions.
                     
-- mission-control-c-tab-initial-selection-off-set :: 0 means select original buffer, 1 means select the second one, etc.
+- c-tab-initial-selection-off-set :: 0 means select original buffer, 1 means select the second one, etc.
 
-mission-control-c-tab shares =mission-control-black-list-regexp=
+c-tab shares =mcon-black-list-regexp=
 
                
