@@ -330,20 +330,8 @@ Counts form 1 instead of 0.")
 
 (defun c-tab-next ()
   "Selected next preview window in c-tab-mode."
-  (interactive)
-<<<<<<< HEAD
-  (mission-control-c-tab--unhignlight)
-  (setq mission-control-c-tab--selected-window (1+ mission-control-c-tab--selected-window))
-  (when (> mission-control-c-tab--selected-window mission-control-c-tab--buffer-count)
-    (setq mission-control-c-tab--selected-window 1))
-  (select-window (nth (1- mission-control-c-tab--selected-window) mission-control-c-tab--window-list))
-  (mission-control-c-tab--highlight))
-
-(defun mission-control-c-tab--highlight ()
-  "Highlight current buffer."
-  (dolist (face mission-control-c-tab-face-to-override)
-=======
-  (c-tab--unhignlight)
+  (interactive))
+(((c-tab--unhignlight)
   (setq c-tab--selected-window (1+ c-tab--selected-window))
   (when (> c-tab--selected-window c-tab--buffer-count)
     (setq c-tab--selected-window 1))
@@ -353,7 +341,6 @@ Counts form 1 instead of 0.")
 (defun c-tab--highlight ()
   "Highlight current buffer"
   (dolist (face c-tab-face-to-override)
->>>>>>> parent of 109f04f... Change namespace
     (push (face-remap-add-relative face '(highlight))
           c-tab--face-remap-list)))
 
@@ -362,15 +349,8 @@ Counts form 1 instead of 0.")
   (dolist (remap c-tab--face-remap-list)
     (face-remap-remove-relative remap)))
 
-<<<<<<< HEAD
-(defun mission-control-c-tab--cleanup (buffer-list temp-buffer-list)
-  "Switch to selected buffer and clean up temp buffers, windows and frame.
-Argument BUFFER-LIST a list of buffers in Emacs buffer list.
-Argument TEMP-BUFFER-LIST temperary buffers correspond to each preview window."
-=======
-(defun c-tab--cleanup (buffer-list temp-buffer-list)
+((defun c-tab--cleanup (buffer-list temp-buffer-list)
   "Switch to selected buffer and clean up temp buffers, windows and frame."
->>>>>>> parent of 109f04f... Change namespace
   (mapc #'kill-buffer temp-buffer-list)
   (delete-frame)
   (switch-to-buffer (nth (1- c-tab--selected-window) buffer-list))
