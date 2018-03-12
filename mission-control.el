@@ -55,7 +55,7 @@ For example, (font-spec :size 10)"
 Return a list of buffers."
   (let ((black-list-regexp (string-join black-list-regexp "\\|"))
         (buffer-list ()))
-    (dolist (index (number-sequence 1 c-tab-max-buffer))
+    (dolist (index (number-sequence 1 mcon-c-tab-max-buffer))
       ;; don't include special buffers
       (let ((buffer (nth (- index 1) (buffer-list))))
         (unless (string-match black-list-regexp (buffer-name buffer))
@@ -153,7 +153,7 @@ EXTRA-FORM is a list of extra forms to be evaluated in each buffer."
                               buffer-list
                               mcon-thumbnail-font
                               mcon-number-face
-                              '((c-tab--setup-next-binding))))
+                              '((mcon-c-tab--setup-next-binding))))
            (number-char-list '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9))
            (selected-window (string-to-number
                              (char-to-string
@@ -166,89 +166,89 @@ EXTRA-FORM is a list of extra forms to be evaluated in each buffer."
       (delete-frame)
       (switch-to-buffer (nth (- selected-window 1) buffer-list)))))
 
-(defgroup c-tab nil
+(defgroup mcon-c-tab nil
   "Mission-control-like switch buffer."
   :group 'convenience)
 
-(defcustom c-tab-timeout 1
+(defcustom mcon-c-tab-timeout 1
   "Idle time before switch to selected buffer."
   :type 'number
-  :group 'c-tab)
+  :group 'mcon-c-tab)
 
-(defcustom c-tab-max-buffer 5
-  "Maximum number of buffers that c-tab will show."
+(defcustom mcon-c-tab-max-buffer 5
+  "Maximum number of buffers that mcon-c-tab will show."
   :type 'number
-  :group 'c-tab)
+  :group 'mcon-c-tab)
 
-(defcustom c-tab-height-ratio 0.3
+(defcustom mcon-c-tab-height-ratio 0.3
   "Ratio of height of preview frame to original frame."
   :type 'number
-  :group 'c-tab)
+  :group 'mcon-c-tab)
 
-(defcustom c-tab-number-face '((:height 200))
+(defcustom mcon-c-tab-number-face '((:height 200))
   "Face of numbers on the modeline on each window."
-  :group 'c-tab)
+  :group 'mcon-c-tab)
 
-(defcustom c-tab-thumbnail-font (font-spec :size 10)
+(defcustom mcon-c-tab-thumbnail-font (font-spec :size 10)
   "Font of each preview window.
 
 It should be a font-spec object.
 
 For example, (font-spec :size 10)"
   :type 'font-spec
-  :group 'c-tab)
+  :group 'mcon-c-tab)
 
-(defcustom c-tab-initial-selection-offset 0
+(defcustom mcon-c-tab-initial-selection-offset 0
   "0 means select original buffer when preview pane pops up.
 
 1 means select next buffer,etc.")
 
-(defcustom c-tab-key-list '("<C-tab>" "<C-backtab>")
-  "Key sequence to invoke c-tab functions.
+(defcustom mcon-c-tab-key-list '("<mcon-c-tab>" "<C-backtab>")
+  "Key sequence to invoke mcon-c-tab functions.
 
-e.g. \"<C-tab>\""
+e.g. \"<mcon-c-tab>\""
   :type 'list
-  :group 'c-tab)
+  :group 'mcon-c-tab)
 
-(defvar c-tab--window-list ()
-  "A list of window to be selected by `c-tab-next'.")
+(defvar mcon-c-tab--window-list ()
+  "A list of window to be selected by `mcon-c-tab-next'.")
 
-(defvar c-tab--buffer-list ()
-  "A list of buffers to be selected by `c-tab-next'.")
+(defvar mcon-c-tab--buffer-list ()
+  "A list of buffers to be selected by `mcon-c-tab-next'.")
 
-(defvar c-tab--selected-window 1
+(defvar mcon-c-tab--selected-window 1
   "Current selected window.
 Counts form 1 instead of 0.")
 
-(defvar c-tab--buffer-count 0
+(defvar mcon-c-tab--buffer-count 0
   "Number of buffers to select from.")
 
-(defvar c-tab-mode-map (make-sparse-keymap)
-  "Key map for c-tab.")
+(defvar mcon-c-tab-mode-map (make-sparse-keymap)
+  "Key map for mcon-c-tab.")
 
-(defvar c-tab--inhibit-message-old-value nil
+(defvar mcon-c-tab--inhibit-message-old-value nil
   "Original value of `inhibit-message'.")
 
-(defvar c-tab-face-to-override '(default
+(defvar mcon-c-tab-face-to-override '(default
                                   font-lock-comment-face
                                   font-lock-warning-face
                                   hl-line)
-  "Faces to be highlighted when c-tab highlight a buffer.")
+  "Faces to be highlighted when mcon-c-tab highlight a buffer.")
 
-(defvar c-tab--face-remap-list ()
+(defvar mcon-c-tab--face-remap-list ()
   "A list of remaps returned by `face-remap-add-relative'.
 
-`c-tab--unhignlight' use them to unhignlight.")
+`mcon-c-tab--unhignlight' use them to unhignlight.")
 
-(defun c-tab-graphic ()
-  "Switch between buffers like C-TAB in mac and windows."
+(defun mcon-c-tab-graphic ()
+  "Switch between buffers like MCON-C-TAB in mac and windows."
   (interactive)
-  (setq c-tab--inhibit-message-old-value inhibit-message)
-  (setq c-tab--selected-window 1)
-  (let* ((frame-height (truncate (* (frame-parameter nil 'height) c-tab-height-ratio)))
+  (setq mcon-c-tab--inhibit-message-old-value inhibit-message)
+  (setq mcon-c-tab--selected-window 1)
+  (let* ((frame-height (truncate (* (frame-parameter nil 'height) mcon-c-tab-height-ratio)))
          (frame-width  (frame-parameter nil 'width))
          (frame-top    (if window-system
-                           (+ (truncate (* (frame-pixel-height) (- 1 c-tab-height-ratio) 0.5)) (frame-parameter nil 'top))
+                           (+ (truncate (* (frame-pixel-height) (- 1 mcon-c-tab-height-ratio) 0.5)) (frame-parameter nil 'top))
                          0))
          (buffer-list  (mcon--construct-buffer-list mcon-black-list-regexp)))
     
@@ -261,9 +261,9 @@ Counts form 1 instead of 0.")
            (width        (/ frame-width buffer-count))
            (window-list  (mcon--make-window 1 buffer-count width frame-height)))
       
-      (setq c-tab--buffer-list buffer-list)
-      (setq c-tab--buffer-count buffer-count)
-      (setq c-tab--window-list window-list)
+      (setq mcon-c-tab--buffer-list buffer-list)
+      (setq mcon-c-tab--buffer-count buffer-count)
+      (setq mcon-c-tab--window-list window-list)
       
       ;; now all the windows are created
       ;; loop throught them again and
@@ -273,65 +273,65 @@ Counts form 1 instead of 0.")
                                buffer-count
                                window-list
                                buffer-list
-                               c-tab-thumbnail-font
-                               c-tab-number-face
-                               '((c-tab--setup-next-binding)))))
+                               mcon-c-tab-thumbnail-font
+                               mcon-c-tab-number-face
+                               '((mcon-c-tab--setup-next-binding)))))
         
         ;; select first window and highlight
-        (setq c-tab--selected-window c-tab-initial-selection-offset)
-        (c-tab-next)
+        (setq mcon-c-tab--selected-window mcon-c-tab-initial-selection-offset)
+        (mcon-c-tab-next)
         
         ;; quit preview panel and select buffer in timeout
-        (run-with-idle-timer c-tab-timeout nil
-                             #'c-tab--cleanup
+        (run-with-idle-timer mcon-c-tab-timeout nil
+                             #'mcon-c-tab--cleanup
                              buffer-list temp-buffer-list)
         ))))
 
-(defun c-tab-next ()
-  "Selected next preview window in c-tab-mode."
+(defun mcon-c-tab-next ()
+  "Selected next preview window in mcon-c-tab-mode."
   (interactive)
-  (c-tab--unhignlight)
-  (setq c-tab--selected-window (1+ c-tab--selected-window))
-  (when (> c-tab--selected-window c-tab--buffer-count)
-    (setq c-tab--selected-window 1))
-  (select-window (nth (1- c-tab--selected-window) c-tab--window-list))
-  (c-tab--highlight))
+  (mcon-c-tab--unhignlight)
+  (setq mcon-c-tab--selected-window (1+ mcon-c-tab--selected-window))
+  (when (> mcon-c-tab--selected-window mcon-c-tab--buffer-count)
+    (setq mcon-c-tab--selected-window 1))
+  (select-window (nth (1- mcon-c-tab--selected-window) mcon-c-tab--window-list))
+  (mcon-c-tab--highlight))
 
-(defun c-tab--highlight ()
+(defun mcon-c-tab--highlight ()
   "Highlight current buffer"
-  (dolist (face c-tab-face-to-override)
+  (dolist (face mcon-c-tab-face-to-override)
     (push (face-remap-add-relative face '(highlight))
-          c-tab--face-remap-list)))
+          mcon-c-tab--face-remap-list)))
 
-(defun c-tab--unhignlight ()
+(defun mcon-c-tab--unhignlight ()
   "Set buffer face back."
-  (dolist (remap c-tab--face-remap-list)
+  (dolist (remap mcon-c-tab--face-remap-list)
     (face-remap-remove-relative remap)))
 
-(defun c-tab--cleanup (buffer-list temp-buffer-list)
+(defun mcon-c-tab--cleanup (buffer-list temp-buffer-list)
   "Switch to selected buffer and clean up temp buffers, windows and frame."
   (mapc #'kill-buffer temp-buffer-list)
   (delete-frame)
-  (switch-to-buffer (nth (1- c-tab--selected-window) buffer-list))
-  (c-tab-setup-c-tab-binding)
-  (setq inhibit-message c-tab--inhibit-message-old-value)
+  (switch-to-buffer (nth (1- mcon-c-tab--selected-window) buffer-list))
+  (mcon-c-tab-setup-mcon-c-tab-binding)
+  (setq inhibit-message mcon-c-tab--inhibit-message-old-value)
   )
 
-(defun c-tab--setup-next-binding ()
-  "Bind keys in `c-tab-key-list' to `c-tab-next'."
-  (dolist (key c-tab-key-list)
+(defun mcon-c-tab--setup-next-binding ()
+  "Bind keys in `mcon-c-tab-key-list' to `mcon-c-tab-next'."
+  (dolist (key mcon-c-tab-key-list)
     (if (featurep 'bind-key)
-        (eval `(bind-key* ,key #'c-tab-next))
-      (global-set-key (kbd key) #'c-tab-next))))
+        (eval `(bind-key* ,key #'mcon-c-tab-next))
+      (global-set-key (kbd key) #'mcon-c-tab-next))))
 
-(defun c-tab-setup-c-tab-binding ()
-  "Bind keys in `c-tab-key-list' to `c-tab-graphic'."
+(defun mcon-c-tab-setup-binding ()
+  "Bind keys in `mcon-c-tab-key-list' to `mcon-c-tab-graphic'."
   (interactive)
-  (dolist (key c-tab-key-list)
+  (dolist (key mcon-c-tab-key-list)
     (if (featurep 'bind-key)
-        (eval `(bind-key* ,key #'c-tab-graphic))
-      (global-set-key (kbd key) #'c-tab-graphic))))
+        (eval `(bind-key* ,key #'mcon-c-tab-graphic))
+      (global-set-key (kbd key) #'mcon-c-tab-graphic))))
 
-;; (c-tab-setup-c-tab-binding)
+;; (mcon-c-tab-setupbinding)
 
 (provide 'mission-control)
