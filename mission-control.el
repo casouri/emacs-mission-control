@@ -377,6 +377,4 @@ Counts form 1 instead of 0.")
 
 (provide 'mission-control)
 
-(provide 'mission-control)
-
 ;;; mission-control.el ends here
