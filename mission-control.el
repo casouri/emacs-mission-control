@@ -167,7 +167,7 @@ EXTRA-FORM is a list of extra forms to be evaluated in each buffer."
       (switch-to-buffer (nth (- selected-window 1) buffer-list)))))
 
 (defgroup mission-control-c-tab nil
-  "Mission-control-like switch buffer."
+  "c-tab-like switch buffer."
   :group 'convenience)
 
 (defcustom mission-control-c-tab-timeout 1
