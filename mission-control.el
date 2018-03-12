@@ -32,7 +32,7 @@
 ;; To use mission-control: simply invoke `mission-control-switch'.
 
 ;; To use mission-control-c-tab: configure `mission-control-c-tab-key-list'
-;; and invoke `mission-control-c-tab-setup-binding' to bind keys.
+;; and invoke `mission-control-c-tab-setup-mission-control-c-tab-binding' to bind keys.
 ;; Then use that keybinding to switch between buffers.
 
 ;;; Code:
@@ -356,7 +356,7 @@ Argument TEMP-BUFFER-LIST temperary buffers correspond to each preview window."
   (mapc #'kill-buffer temp-buffer-list)
   (delete-frame)
   (switch-to-buffer (nth (1- mission-control-c-tab--selected-window) buffer-list))
-  (mission-control-c-tab-setup-binding)
+  (mission-control-c-tab-setup-mission-control-c-tab-binding)
   (setq inhibit-message mission-control-c-tab--inhibit-message-old-value)
   )
 
@@ -367,7 +367,7 @@ Argument TEMP-BUFFER-LIST temperary buffers correspond to each preview window."
         (eval `(bind-key* ,key #'mission-control-c-tab-next))
       (global-set-key (kbd key) #'mission-control-c-tab-next))))
 
-(defun mission-control-c-tab-setup-binding ()
+(defun mission-control-c-tab-setup-mission-control-c-tab-binding ()
   "Bind keys in `mission-control-c-tab-key-list' to `mission-control-c-tab-graphic'."
   (interactive)
   (dolist (key mission-control-c-tab-key-list)
@@ -375,7 +375,7 @@ Argument TEMP-BUFFER-LIST temperary buffers correspond to each preview window."
         (eval `(bind-key* ,key #'mission-control-c-tab-graphic))
       (global-set-key (kbd key) #'mission-control-c-tab-graphic))))
 
-;; (mission-control-c-tab-setup-binding)
+;; (mission-control-c-tab-setup-mission-control-c-tab-binding)
 
 (provide 'mission-control)
 
