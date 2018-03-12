@@ -244,7 +244,7 @@ For example, (font-spec :size 10)"
 
 1 means select next buffer,etc.")
 
-(defcustom mcon-c-tab-key-list '("<mcon-c-tab>" "<C-backtab>")
+(defcustom mcon-c-tab-key-list '("<C-tab>" "<C-backtab>")
   "Key sequence to invoke mcon-c-tab functions.
 
 e.g. \"<mcon-c-tab>\""
