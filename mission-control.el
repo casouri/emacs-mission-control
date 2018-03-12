@@ -350,6 +350,4 @@ Argument TEMP-BUFFER-LIST temperary buffers correspond to each preview window."
 
 (provide 'mission-control)
 
-(provide 'mission-control)
-
 ;;; mission-control.el ends here
