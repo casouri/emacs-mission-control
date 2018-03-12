@@ -29,10 +29,10 @@
 ;; It also provides a C-TAB feature to switch between buffers like the command tab
 ;; in macOS.
 
-;; To use mission-control: simply invoke `mission-control-switch'.
+;; To use mission-control: simply invoke `mcon-switch'.
 
-;; To use mission-control-c-tab: configure `mission-control-c-tab-key-list'
-;; and invoke `mission-control-c-tab-setup-mission-control-c-tab-binding' to bind keys.
+;; To use mission-control-c-tab: configure `mcon-c-tab-key-list'
+;; and invoke `mcon-c-tab-setup-binding' to bind keys.
 ;; Then use that keybinding to switch between buffers.
 
 ;;; Code:
@@ -331,12 +331,12 @@ Counts form 1 instead of 0.")
 (defun mcon-c-tab-next ()
   "Selected next preview window in mcon-c-tab-mode."
   (interactive)
-  (mission-control-c-tab--unhignlight)
+  (mcon-c-tab--unhignlight)
   (setq mcon-c-tab--selected-window (1+ mcon-c-tab--selected-window))
   (when (> mcon-c-tab--selected-window mcon-c-tab--buffer-count)
     (setq mcon-c-tab--selected-window 1))
   (select-window (nth (1- mcon-c-tab--selected-window) mcon-c-tab--window-list))
-  (mission-control-c-tab--highlight))
+  (mcon-c-tab--highlight))
 
 (defun mcon-c-tab--highlight ()
   "Highlight current buffer."
@@ -376,7 +376,7 @@ Argument TEMP-BUFFER-LIST temperary buffers correspond to each preview window."
         (eval `(bind-key* ,key #'mcon-c-tab-graphic))
       (global-set-key (kbd key) #'mcon-c-tab-graphic))))
 
-;; (mcon-c-tab-setupbinding)
+;; (mcon-c-tab-setup-binding)
 
 (provide 'mission-control)
 
