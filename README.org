@@ -19,7 +19,7 @@ After =mission-control-c-tab-timeout= seconds of idle buffer will switch to the 
 #+BEGIN_SRC lisp
 (require 'mission-control)
 ;; to use mission-control-c-tab
-(mission-control-c-tab-setup-mission-control-c-tab-binding)
+(mission-control-c-tab-setup-binding)
 #+END_SRC
 
 * Functions
@@ -27,7 +27,7 @@ After =mission-control-c-tab-timeout= seconds of idle buffer will switch to the 
 - mission-control-switch :: switch between buffers
 - mission-control-c-tab-graphic :: switch between buffers. You can't directly call this function though.
                    Configure =mission-control-c-tab-key-list= and call =mission-control-c-tab-setup-key= to bind keys.
-- mission-control-c-tab-setup-mission-control-c-tab-binding :: Bing keys in =mission-control-c-tab-key-list=.
+- mission-control-c-tab-setup-binding :: Bing keys in =mission-control-c-tab-key-list=.
 
 * Customizations
 
