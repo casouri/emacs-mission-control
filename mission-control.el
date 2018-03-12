@@ -5,27 +5,27 @@
   :group 'convenience)
 
 
-(defcustom mcon-black-list-regexp '("\*.+\*" "magit")
+(defcustom mission-control-black-list-regexp '("\*.+\*" "magit")
   "Buffers that match regexps inside this list are note included in mission control."
   :type 'list
   :group 'mission-control)
 
-(defcustom mcon-max-buffer 10
+(defcustom mission-control-max-buffer 10
   "Maximum number of buffers to show."
   :type 'number
   :group 'mission-control)
 
-(defcustom mcon-number-face '(:height 300)
+(defcustom mission-control-number-face '(:height 300)
   "Face of numbers on the modeline on each window."
   :type 'list
   :group 'mission-control)
 
-(defcustom mcon-prompt-face '(:height 200)
+(defcustom mission-control-prompt-face '(:height 200)
   "Face of numbers on the modeline on each window."
   :type 'list
   :group 'mission-control)
 
-(defcustom mcon-thumbnail-font (font-spec :size 10)
+(defcustom mission-control-thumbnail-font (font-spec :size 10)
   "Font of each preview window.
 
 It should be a font-spec object.
@@ -34,14 +34,14 @@ For example, (font-spec :size 10)"
   :type 'font-spec
   :group 'mission-control)
 
-(defun mcon-calculate-shape (length)
+(defun mission-control-calculate-shape (length)
   "Calculate a 2D shape base on LENGTH."
   (let* ((row (truncate (sqrt length)))
          (colomn (ceiling (/ (float length) row))))
     `(,row ,colomn)
     ))
 
-(defun mcon--cleanup-gui ()
+(defun mission-control--cleanup-gui ()
   "Cleanup GUI elements in new frame."
   (when window-system
     (tool-bar-mode -1)
@@ -49,20 +49,20 @@ For example, (font-spec :size 10)"
   (unless (eq window-system 'ns)
     (menu-bar-mode -1)))
 
-(defun mcon--construct-buffer-list (black-list-regexp)
+(defun mission-control--construct-buffer-list (black-list-regexp)
   "Get a list of buffers that doesn't match in BLACK-LIST-REGEXP.
 
 Return a list of buffers."
   (let ((black-list-regexp (string-join black-list-regexp "\\|"))
         (buffer-list ()))
-    (dolist (index (number-sequence 1 c-tab-max-buffer))
+    (dolist (index (number-sequence 1 mission-control-c-tab-max-buffer))
       ;; don't include special buffers
       (let ((buffer (nth (- index 1) (buffer-list))))
         (unless (string-match black-list-regexp (buffer-name buffer))
           (push buffer buffer-list))))
     buffer-list))
 
-(defun mcon--make-window (row colomn width height)
+(defun mission-control--make-window (row colomn width height)
   "Create ROW x COLOMN windows in current frame.
 
 Each window is WIDTH x HEIGHT."
@@ -87,7 +87,7 @@ Each window is WIDTH x HEIGHT."
          (push (selected-window) all-window-list)))
      (reverse all-window-list))))
 
-(defun mcon--format-temp-buffer (row colomn window-list buffer-list thumbnail-font number-face &optional extra-form)
+(defun mission-control--format-temp-buffer (row colomn window-list buffer-list thumbnail-font number-face &optional extra-form)
   "Format each buffer in preview windows.
 
 ROW & COLOMN are same with window shape.
@@ -127,211 +127,211 @@ EXTRA-FORM is a list of extra forms to be evaluated in each buffer."
           )))
     temp-buffer-list))
 
-(defun mcon-switch ()
+(defun mission-control-switch ()
   "Open mission control and select a buffer."
   (interactive)
   (let* ((row-window-list    ())
          (colomn-window-list ())
          (all-window-list    ())
-         (buffer-list        (mcon--construct-buffer-list mcon-black-list-regexp))
+         (buffer-list        (mission-control--construct-buffer-list mission-control-black-list-regexp))
          (frame-height       (frame-parameter nil 'height))
          (frame-width        (frame-parameter nil 'width)))
     
     (make-frame `((height . ,frame-height) (width . ,frame-width)))
-    (mcon--cleanup-gui)
+    (mission-control--cleanup-gui)
     
-    (let* ((shape (mcon-calculate-shape (length buffer-list)))
+    (let* ((shape (mission-control-calculate-shape (length buffer-list)))
            (row (car shape))
            (colomn (nth 1 shape))
            (width (/ frame-width colomn))
            (height (/ frame-height row))
-           (all-window-list (mcon--make-window row colomn width height))
-           (temp-buffer-list (mcon--format-temp-buffer
+           (all-window-list (mission-control--make-window row colomn width height))
+           (temp-buffer-list (mission-control--format-temp-buffer
                               row
                               colomn
                               all-window-list
                               buffer-list
-                              mcon-thumbnail-font
-                              mcon-number-face
-                              '((c-tab--setup-next-binding))))
+                              mission-control-thumbnail-font
+                              mission-control-number-face
+                              '((mission-control-c-tab--setup-next-binding))))
            (number-char-list '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9))
            (selected-window (string-to-number
                              (char-to-string
                               (read-char-choice
                                (propertize "Select window: "
-                                           'face mcon-prompt-face)
+                                           'face mission-control-prompt-face)
                                number-char-list)))))
       
       (mapc #'kill-buffer temp-buffer-list)
       (delete-frame)
       (switch-to-buffer (nth (- selected-window 1) buffer-list)))))
 
-(defgroup c-tab nil
+(defgroup mission-control-c-tab nil
   "Mission-control-like switch buffer."
   :group 'convenience)
 
-(defcustom c-tab-timeout 1
+(defcustom mission-control-c-tab-timeout 1
   "Idle time before switch to selected buffer."
   :type 'number
-  :group 'c-tab)
+  :group 'mission-control-c-tab)
 
-(defcustom c-tab-max-buffer 5
-  "Maximum number of buffers that c-tab will show."
+(defcustom mission-control-c-tab-max-buffer 5
+  "Maximum number of buffers that mission-control-c-tab will show."
   :type 'number
-  :group 'c-tab)
+  :group 'mission-control-c-tab)
 
-(defcustom c-tab-height-ratio 0.3
+(defcustom mission-control-c-tab-height-ratio 0.3
   "Ratio of height of preview frame to original frame."
   :type 'number
-  :group 'c-tab)
+  :group 'mission-control-c-tab)
 
-(defcustom c-tab-number-face '((:height 200))
+(defcustom mission-control-c-tab-number-face '((:height 200))
   "Face of numbers on the modeline on each window."
-  :group 'c-tab)
+  :group 'mission-control-c-tab)
 
-(defcustom c-tab-thumbnail-font (font-spec :size 10)
+(defcustom mission-control-c-tab-thumbnail-font (font-spec :size 10)
   "Font of each preview window.
 
 It should be a font-spec object.
 
 For example, (font-spec :size 10)"
   :type 'font-spec
-  :group 'c-tab)
+  :group 'mission-control-c-tab)
 
-(defcustom c-tab-initial-selection-offset 0
+(defcustom mission-control-c-tab-initial-selection-offset 0
   "0 means select original buffer when preview pane pops up.
 
 1 means select next buffer,etc.")
 
-(defcustom c-tab-key-list '("<C-tab>" "<C-backtab>")
-  "Key sequence to invoke c-tab functions.
+(defcustom mission-control-c-tab-key-list '("<mission-control-c-tab>" "<C-backtab>")
+  "Key sequence to invoke mission-control-c-tab functions.
 
-e.g. \"<C-tab>\""
+e.g. \"<mission-control-c-tab>\""
   :type 'list
-  :group 'c-tab)
+  :group 'mission-control-c-tab)
 
-(defvar c-tab--window-list ()
-  "A list of window to be selected by `c-tab-next'.")
+(defvar mission-control-c-tab--window-list ()
+  "A list of window to be selected by `mission-control-c-tab-next'.")
 
-(defvar c-tab--buffer-list ()
-  "A list of buffers to be selected by `c-tab-next'.")
+(defvar mission-control-c-tab--buffer-list ()
+  "A list of buffers to be selected by `mission-control-c-tab-next'.")
 
-(defvar c-tab--selected-window 1
+(defvar mission-control-c-tab--selected-window 1
   "Current selected window.
 Counts form 1 instead of 0.")
 
-(defvar c-tab--buffer-count 0
+(defvar mission-control-c-tab--buffer-count 0
   "Number of buffers to select from.")
 
-(defvar c-tab-mode-map (make-sparse-keymap)
-  "Key map for c-tab.")
+(defvar mission-control-c-tab-mode-map (make-sparse-keymap)
+  "Key map for mission-control-c-tab.")
 
-(defvar c-tab--inhibit-message-old-value nil
+(defvar mission-control-c-tab--inhibit-message-old-value nil
   "Original value of `inhibit-message'.")
 
-(defvar c-tab-face-to-override '(default
+(defvar mission-control-c-tab-face-to-override '(default
                                   font-lock-comment-face
                                   font-lock-warning-face
                                   hl-line)
-  "Faces to be highlighted when c-tab highlight a buffer.")
+  "Faces to be highlighted when mission-control-c-tab highlight a buffer.")
 
-(defvar c-tab--face-remap-list ()
+(defvar mission-control-c-tab--face-remap-list ()
   "A list of remaps returned by `face-remap-add-relative'.
 
-`c-tab--unhignlight' use them to unhignlight.")
+`mission-control-c-tab--unhignlight' use them to unhignlight.")
 
-(defun c-tab-graphic ()
-  "Switch between buffers like C-TAB in mac and windows."
+(defun mission-control-c-tab-graphic ()
+  "Switch between buffers like MISSION-CONTROL-C-TAB in mac and windows."
   (interactive)
-  (setq c-tab--inhibit-message-old-value inhibit-message)
-  (setq c-tab--selected-window 1)
-  (let* ((frame-height (truncate (* (frame-parameter nil 'height) c-tab-height-ratio)))
+  (setq mission-control-c-tab--inhibit-message-old-value inhibit-message)
+  (setq mission-control-c-tab--selected-window 1)
+  (let* ((frame-height (truncate (* (frame-parameter nil 'height) mission-control-c-tab-height-ratio)))
          (frame-width  (frame-parameter nil 'width))
          (frame-top    (if window-system
-                           (+ (truncate (* (frame-pixel-height) (- 1 c-tab-height-ratio) 0.5)) (frame-parameter nil 'top))
+                           (+ (truncate (* (frame-pixel-height) (- 1 mission-control-c-tab-height-ratio) 0.5)) (frame-parameter nil 'top))
                          0))
-         (buffer-list  (mcon--construct-buffer-list mcon-black-list-regexp)))
+         (buffer-list  (mission-control--construct-buffer-list mission-control-black-list-regexp)))
     
     (make-frame `((height . ,frame-height) (width . ,frame-width) (top . ,frame-top)))
-    (mcon--cleanup-gui)
+    (mission-control--cleanup-gui)
     
     ;; prepare window and buffers
     (let* ((buffer-list  (reverse buffer-list))
            (buffer-count (length buffer-list))
            (width        (/ frame-width buffer-count))
-           (window-list  (mcon--make-window 1 buffer-count width frame-height)))
+           (window-list  (mission-control--make-window 1 buffer-count width frame-height)))
       
-      (setq c-tab--buffer-list buffer-list)
-      (setq c-tab--buffer-count buffer-count)
-      (setq c-tab--window-list window-list)
+      (setq mission-control-c-tab--buffer-list buffer-list)
+      (setq mission-control-c-tab--buffer-count buffer-count)
+      (setq mission-control-c-tab--window-list window-list)
       
       ;; now all the windows are created
       ;; loop throught them again and
       ;; setup temp buffers in them
-      (let ((temp-buffer-list (mcon--format-temp-buffer
+      (let ((temp-buffer-list (mission-control--format-temp-buffer
                                1
                                buffer-count
                                window-list
                                buffer-list
-                               c-tab-thumbnail-font
-                               c-tab-number-face
-                               '((c-tab--setup-next-binding)))))
+                               mission-control-c-tab-thumbnail-font
+                               mission-control-c-tab-number-face
+                               '((mission-control-c-tab--setup-next-binding)))))
         
         ;; select first window and highlight
-        (setq c-tab--selected-window c-tab-initial-selection-offset)
-        (c-tab-next)
+        (setq mission-control-c-tab--selected-window mission-control-c-tab-initial-selection-offset)
+        (mission-control-c-tab-next)
         
         ;; quit preview panel and select buffer in timeout
-        (run-with-idle-timer c-tab-timeout nil
-                             #'c-tab--cleanup
+        (run-with-idle-timer mission-control-c-tab-timeout nil
+                             #'mission-control-c-tab--cleanup
                              buffer-list temp-buffer-list)
         ))))
 
-(defun c-tab-next ()
-  "Selected next preview window in c-tab-mode."
+(defun mission-control-c-tab-next ()
+  "Selected next preview window in mission-control-c-tab-mode."
   (interactive)
-  (c-tab--unhignlight)
-  (setq c-tab--selected-window (1+ c-tab--selected-window))
-  (when (> c-tab--selected-window c-tab--buffer-count)
-    (setq c-tab--selected-window 1))
-  (select-window (nth (1- c-tab--selected-window) c-tab--window-list))
-  (c-tab--highlight))
+  (mission-control-c-tab--unhignlight)
+  (setq mission-control-c-tab--selected-window (1+ mission-control-c-tab--selected-window))
+  (when (> mission-control-c-tab--selected-window mission-control-c-tab--buffer-count)
+    (setq mission-control-c-tab--selected-window 1))
+  (select-window (nth (1- mission-control-c-tab--selected-window) mission-control-c-tab--window-list))
+  (mission-control-c-tab--highlight))
 
-(defun c-tab--highlight ()
+(defun mission-control-c-tab--highlight ()
   "Highlight current buffer"
-  (dolist (face c-tab-face-to-override)
+  (dolist (face mission-control-c-tab-face-to-override)
     (push (face-remap-add-relative face '(highlight))
-          c-tab--face-remap-list)))
+          mission-control-c-tab--face-remap-list)))
 
-(defun c-tab--unhignlight ()
+(defun mission-control-c-tab--unhignlight ()
   "Set buffer face back."
-  (dolist (remap c-tab--face-remap-list)
+  (dolist (remap mission-control-c-tab--face-remap-list)
     (face-remap-remove-relative remap)))
 
-(defun c-tab--cleanup (buffer-list temp-buffer-list)
+(defun mission-control-c-tab--cleanup (buffer-list temp-buffer-list)
   "Switch to selected buffer and clean up temp buffers, windows and frame."
   (mapc #'kill-buffer temp-buffer-list)
   (delete-frame)
-  (switch-to-buffer (nth (1- c-tab--selected-window) buffer-list))
-  (c-tab-setup-c-tab-binding)
-  (setq inhibit-message c-tab--inhibit-message-old-value)
+  (switch-to-buffer (nth (1- mission-control-c-tab--selected-window) buffer-list))
+  (mission-control-c-tab-setup-mission-control-c-tab-binding)
+  (setq inhibit-message mission-control-c-tab--inhibit-message-old-value)
   )
 
-(defun c-tab--setup-next-binding ()
-  "Bind keys in `c-tab-key-list' to `c-tab-next'."
-  (dolist (key c-tab-key-list)
+(defun mission-control-c-tab--setup-next-binding ()
+  "Bind keys in `mission-control-c-tab-key-list' to `mission-control-c-tab-next'."
+  (dolist (key mission-control-c-tab-key-list)
     (if (featurep 'bind-key)
-        (eval `(bind-key* ,key #'c-tab-next))
-      (global-set-key (kbd key) #'c-tab-next))))
+        (eval `(bind-key* ,key #'mission-control-c-tab-next))
+      (global-set-key (kbd key) #'mission-control-c-tab-next))))
 
-(defun c-tab-setup-c-tab-binding ()
-  "Bind keys in `c-tab-key-list' to `c-tab-graphic'."
+(defun mission-control-c-tab-setup-mission-control-c-tab-binding ()
+  "Bind keys in `mission-control-c-tab-key-list' to `mission-control-c-tab-graphic'."
   (interactive)
-  (dolist (key c-tab-key-list)
+  (dolist (key mission-control-c-tab-key-list)
     (if (featurep 'bind-key)
-        (eval `(bind-key* ,key #'c-tab-graphic))
-      (global-set-key (kbd key) #'c-tab-graphic))))
+        (eval `(bind-key* ,key #'mission-control-c-tab-graphic))
+      (global-set-key (kbd key) #'mission-control-c-tab-graphic))))
 
-;; (c-tab-setup-c-tab-binding)
+;; (mission-control-c-tab-setup-mission-control-c-tab-binding)
 
 (provide 'mission-control)
