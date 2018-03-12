@@ -357,7 +357,7 @@ Argument TEMP-BUFFER-LIST temperary buffers correspond to each preview window."
   (mapc #'kill-buffer temp-buffer-list)
   (delete-frame)
   (switch-to-buffer (nth (1- mcon-c-tab--selected-window) buffer-list))
-  (mcon-c-tab-setup--binding)
+  (mcon-c-tab-setup-binding)
   (setq inhibit-message mcon-c-tab--inhibit-message-old-value)
   )
 
