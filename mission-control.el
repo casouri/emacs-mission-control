@@ -1,4 +1,11 @@
+;;; mission-control.el --- Mission-control like buffer switching
 ;;; -*- lexical-binding: t -*-
+
+
+;;; Commentary:
+;; 
+
+;;; Code:
 
 (defgroup mission-control nil
   "Mission-control-like switch buffer."
@@ -28,7 +35,7 @@
 (defcustom mission-control-thumbnail-font (font-spec :size 10)
   "Font of each preview window.
 
-It should be a font-spec object.
+It should be a ‘font-spec’ object.
 
 For example, (font-spec :size 10)"
   :type 'font-spec
@@ -92,7 +99,11 @@ Each window is WIDTH x HEIGHT."
 
 ROW & COLOMN are same with window shape.
 
-EXTRA-FORM is a list of extra forms to be evaluated in each buffer."
+EXTRA-FORM is a list of extra forms to be evaluated in each buffer.
+Argument WINDOW-LIST a list of preview windows.
+Argument BUFFER-LIST a list of buffers in Emacs buffer list.
+Argument THUMBNAIL-FONT font of each preview window.
+Argument NUMBER-FACE face of number and buffer name in modeline of each preview window."
   ;; now all windows are created
   ;; loop throught them again and
   ;; setup temp buffers in them
@@ -192,7 +203,7 @@ EXTRA-FORM is a list of extra forms to be evaluated in each buffer."
 (defcustom mission-control-c-tab-thumbnail-font (font-spec :size 10)
   "Font of each preview window.
 
-It should be a font-spec object.
+It should be a ‘font-spec’ object.
 
 For example, (font-spec :size 10)"
   :type 'font-spec
@@ -298,7 +309,7 @@ Counts form 1 instead of 0.")
   (mission-control-c-tab--highlight))
 
 (defun mission-control-c-tab--highlight ()
-  "Highlight current buffer"
+  "Highlight current buffer."
   (dolist (face mission-control-c-tab-face-to-override)
     (push (face-remap-add-relative face '(highlight))
           mission-control-c-tab--face-remap-list)))
@@ -309,7 +320,9 @@ Counts form 1 instead of 0.")
     (face-remap-remove-relative remap)))
 
 (defun mission-control-c-tab--cleanup (buffer-list temp-buffer-list)
-  "Switch to selected buffer and clean up temp buffers, windows and frame."
+  "Switch to selected buffer and clean up temp buffers, windows and frame.
+Argument BUFFER-LIST a list of buffers in Emacs buffer list.
+Argument TEMP-BUFFER-LIST temperary buffers correspond to each preview window."
   (mapc #'kill-buffer temp-buffer-list)
   (delete-frame)
   (switch-to-buffer (nth (1- mission-control-c-tab--selected-window) buffer-list))
@@ -335,3 +348,7 @@ Counts form 1 instead of 0.")
 ;; (mission-control-c-tab-setup-mission-control-c-tab-binding)
 
 (provide 'mission-control)
+
+(provide 'mission-control)
+
+;;; mission-control.el ends here
