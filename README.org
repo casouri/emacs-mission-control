@@ -13,7 +13,7 @@ This package provides a macOS mission-control-like way to switch between buffers
 Press mcon-c-tab (C-S-tab on terminal) (=mcon-c-tab-graphic=) to open preview panel, mcon-c-tab (C-S-tab) to loop through them.
 After =mcon-c-tab-timeout= seconds of idle buffer will switch to the selected one.
 
-[[./c-tab.gif][./mcon-c-tab.gif]]
+[[./c-tab.gif][./c-tab.gif]]
 
 * Install
 #+BEGIN_SRC lisp
