@@ -71,6 +71,15 @@ For example, (font-spec :size 10)"
   :type 'font-spec
   :group 'mission-control)
 
+(defcustom mcon-frame-name ""
+  "Title format for mission-control preview frame.
+
+If you use chunkwm, set it to \"mcon\" and set
+
+chunkc tiling::rule --owner Emacs --except \"mcon.*\" --state tile"
+  :type 'string
+  :group 'mission-control)
+
 (defun mcon-calculate-shape (length)
   "Calculate a 2D shape base on LENGTH."
   (let* ((row (truncate (sqrt length)))
@@ -178,7 +187,7 @@ Argument NUMBER-FACE face of number and buffer name in modeline of each preview 
          (frame-height       (frame-parameter nil 'height))
          (frame-width        (frame-parameter nil 'width)))
     
-    (make-frame `((height . ,frame-height) (width . ,frame-width)))
+    (make-frame `((height . ,frame-height) (width . ,frame-width) (name . ,mcon-frame-name)))
     (mcon--cleanup-gui)
     
     (let* ((shape (mcon-calculate-shape (length buffer-list)))
@@ -293,7 +302,7 @@ Counts form 1 instead of 0.")
                          0))
          (buffer-list  (mcon--construct-buffer-list mcon-black-list-regexp)))
     
-    (make-frame `((height . ,frame-height) (width . ,frame-width) (top . ,frame-top)))
+    (make-frame `((height . ,frame-height) (width . ,frame-width) (top . ,frame-top) (name . ,mcon-frame-name)))
     (mcon--cleanup-gui)
     
     ;; prepare window and buffers
