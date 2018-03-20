@@ -368,6 +368,10 @@ Argument TEMP-BUFFER-LIST temperary buffers correspond to each preview window."
   (switch-to-buffer (nth (1- mcon-c-tab--selected-window) buffer-list))
   (mcon-c-tab-setup-binding)
   (setq inhibit-message mcon-c-tab--inhibit-message-old-value)
+  (setq mcon-c-tab--buffer-count 0)
+  (setq mcon-c-tab--buffer-list ())
+  (setq mcon-c-tab--window-list ())
+  (setq mcon-c-tab--selected-window 1)
   )
 
 (defun mcon-c-tab--setup-next-binding ()
