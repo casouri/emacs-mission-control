@@ -1,5 +1,7 @@
 #+TITLE: Misson control
 
+*Note <2019-03-18 Mon 18:00>:* There is a nice ELPA package called [[https://github.com/clemera/buffer-expose][expose]] that provides similar functionality.
+
 This package provides a macOS mission-control-like way to switch between buffers.
 
 *mission control:*
